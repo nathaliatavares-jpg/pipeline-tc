@@ -1,0 +1,4 @@
+google-cloud-bigquery
+gspread
+google-auth
+slack_sdk

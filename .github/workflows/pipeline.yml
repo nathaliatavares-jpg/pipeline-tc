@@ -1,0 +1,32 @@
+name: Pipeline TC - Acompanhamento Diário
+
+on:
+  schedule:
+    - cron: '45 11 * * *'   # 08:45 BRT (UTC-3), todo dia
+  workflow_dispatch:         # permite rodar manualmente pelo GitHub
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Configurar credenciais Google
+        run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > /tmp/gcp_credentials.json
+
+      - name: Executar pipeline
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+        run: python pipeline_agent.py
