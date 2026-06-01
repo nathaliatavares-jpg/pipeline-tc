@@ -106,7 +106,7 @@ proposal_segmentada AS (
       WHEN rating_tc = 'B3' AND UPPER(nise_tag) LIKE '%PLAT%'               THEN 'Grupo Cortado'
       WHEN grupo_especial LIKE '%TEST NO ECO%' AND range_bureau <> 'A'      THEN 'Users Ecossist Cortado'
       WHEN grupo_especial LIKE '%TEST NO ECO%'                               THEN 'Users Ecossist'
-      ELSE 'Gestão Zé'
+      ELSE 'BAU'
     END AS segmento
   FROM proposal_ajustada
 ),
