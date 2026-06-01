@@ -100,7 +100,7 @@ proposal_segmentada AS (
   SELECT
     *,
     CASE
-      WHEN LOWER(aud_ins_user) LIKE '%gorib%' OR FLAG_SELLERS = 'SELLER'    THEN 'SELLER'
+      WHEN LOWER(aud_ins_user) LIKE '%gorib%' OR FLAG_SELLERS IN ('SELLER','MIXTO') OR nise_tag = 'SELLER' THEN 'SELLER'
       WHEN FLAG_TC = '2. Micro TC'                                           THEN 'MICRO'
       WHEN LEFT(rating_tc, 1) = 'C'                                         THEN 'Grupo Cortado'
       WHEN rating_tc = 'B3' AND UPPER(nise_tag) LIKE '%PLAT%'               THEN 'Grupo Cortado'
