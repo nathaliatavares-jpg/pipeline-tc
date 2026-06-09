@@ -145,6 +145,7 @@ comunic AS (
     NOTIFICATION_TEXT_DESC,
     cus_cust_id,
     CAST(SENT_DATE AS DATE)             AS sent_date,
+    COUNTIF(EVENT_TYPE = 'test')    > 0 AS fl_sent,
     COUNTIF(EVENT_TYPE = 'arrived') > 0 AS fl_arrived,
     COUNTIF(EVENT_TYPE = 'shown')   > 0 AS fl_shown,
     COUNTIF(EVENT_TYPE = 'open')    > 0 AS fl_open
@@ -155,7 +156,7 @@ comunic AS (
     SENT_DATE BETWEEN '2026-01-01' AND CURRENT_DATE - 1
     AND NT.SIT_SITE_ID = 'MLB'
     AND FLAG_NOTIFICATION_CENTER = 'N'
-    AND EVENT_TYPE IN ('shown','open','arrived','control')
+    AND EVENT_TYPE IN ('test','shown','open','arrived','control')
     AND (
       CAMPAIGN_NAME IN (
         'MLB-ML-I-EG-XSELLT1-PUSH-NIA-CCARDACQ-D1',
@@ -198,6 +199,7 @@ SELECT
     STRING_AGG(DISTINCT c.NOTIFICATION_TITLE_DESC, ' | ' ORDER BY c.NOTIFICATION_TITLE_DESC) AS titulos,
     STRING_AGG(DISTINCT c.NOTIFICATION_TEXT_DESC,  ' | ' ORDER BY c.NOTIFICATION_TEXT_DESC)  AS corpos,
     ANY_VALUE(te.qtd_total_encendido)                                                         AS qtd_total_encendido,
+    COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END)                        AS qtd_sent,
     COUNT(DISTINCT CASE WHEN c.fl_arrived THEN prop.ccard_prop_id END)                        AS qtd_arrived,
     COUNT(DISTINCT CASE WHEN c.fl_shown   THEN prop.ccard_prop_id END)                        AS qtd_shown,
     COUNT(DISTINCT CASE WHEN c.fl_open    THEN prop.ccard_prop_id END)                        AS qtd_open,
