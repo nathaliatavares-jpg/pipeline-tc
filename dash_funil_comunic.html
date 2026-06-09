@@ -44,11 +44,11 @@
         .notif-item .value { font-size: 0.97rem; font-weight: 600; color: #333; line-height: 1.4; }
         .creative-block { border-top: 1px solid #ffd740; margin-top: 14px; padding-top: 14px; }
 
-        .funnel-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 22px; }
-        .funnel-card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center; }
-        .funnel-card .icon  { font-size: 1.7rem; margin-bottom: 6px; }
-        .funnel-card .label { font-size: 0.75rem; color: #999; text-transform: uppercase; letter-spacing: 0.06em; }
-        .funnel-card .value { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; }
+        .funnel-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 22px; }
+        .funnel-card { background: white; border-radius: 12px; padding: 18px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center; }
+        .funnel-card .icon  { font-size: 1.5rem; margin-bottom: 6px; }
+        .funnel-card .label { font-size: 0.72rem; color: #999; text-transform: uppercase; letter-spacing: 0.06em; }
+        .funnel-card .value { font-size: 1.7rem; font-weight: 800; margin: 8px 0 4px; }
         .funnel-card .rate  { font-size: 0.83rem; color: #aaa; }
         .funnel-card.sent    .value { color: #8b5cf6; }
         .funnel-card.arrived .value { color: #009ee3; }
@@ -60,6 +60,7 @@
             color: #999; margin-bottom: 12px; margin-top: 8px; padding-left: 4px;
         }
 
+        .charts-4col { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 22px; }
         .charts-3col { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 22px; }
         .charts-2col { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-bottom: 22px; }
 
@@ -68,9 +69,10 @@
         .chart-sm { position: relative; height: 240px; }
         .chart-md { position: relative; height: 270px; }
 
+        @media (max-width: 1200px) { .charts-4col { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 1100px) { .charts-3col { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 768px)  {
-            .funnel-cards, .charts-3col, .charts-2col { grid-template-columns: 1fr; }
+            .funnel-cards, .charts-4col, .charts-3col, .charts-2col { grid-template-columns: 1fr; }
             .container { padding: 16px; }
         }
     </style>
@@ -154,7 +156,7 @@
     </div>
 
     <div class="section-label">Volume por Mes de Encendido</div>
-    <div class="charts-3col">
+    <div class="charts-4col">
         <div class="chart-section">
             <h3>📤 Sent (Enviados)</h3>
             <div class="chart-sm"><canvas id="sentChart"></canvas></div>
@@ -174,7 +176,7 @@
     </div>
 
     <div class="section-label">Taxas por Mes de Encendido (% sobre Total Encendido)</div>
-    <div class="charts-2col">
+    <div class="charts-4col">
         <div class="chart-section">
             <h3>% Enviou — Sent / Total Encendido</h3>
             <div class="chart-md"><canvas id="rateEnviouChart"></canvas></div>
