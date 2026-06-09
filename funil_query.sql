@@ -56,6 +56,8 @@ proposal_ajustada AS (
     cenc.policy_description,
     cenc.aud_ins_user,
     cenc.fecha_encendido,
+    -- flag EA-MP: COM EA se converteu via placement EA no mesmo mês de conversão
+    CASE WHEN congrats.ea_cust_id IS NOT NULL THEN 'COM EA' ELSE 'SEM EA' END AS flag_ea,
     -- mar aberto grupo especial
     CASE
       WHEN matc.cus_cust_id_borrower IS NOT NULL AND matc.flow_resolution LIKE '%on_hold%' THEN 'Mar Aberto Async'
@@ -93,6 +95,14 @@ proposal_ajustada AS (
   LEFT JOIN mar_aberto_tc matc
     ON  matc.cus_cust_id_borrower = SAFE_CAST(A.CUS_CUST_ID AS INT64)
     AND CAST(A.CCARD_PROP_CREATION_DT AS DATE) BETWEEN matc.last_update AND matc.last_update + 2
+  LEFT JOIN (
+    SELECT DISTINCT cus_cust_id AS ea_cust_id, DATE_TRUNC(DT_aceite, MONTH) AS mes_aceite
+    FROM `meli-bi-data.SBOX_CREDITSTC.0_AUT_TBL_CONGRATS_ADQ_MLB_TOTAL_AJUSTADA`
+    WHERE UPPER(PLACEMENT) LIKE '%EA%'
+  ) congrats
+    ON  SAFE_CAST(A.CUS_CUST_ID AS INT64) = congrats.ea_cust_id
+    AND DATE_TRUNC(CAST(A.CCARD_PROP_UPDATE_DT AS DATE), MONTH) = congrats.mes_aceite
+    AND A.CCARD_PROP_STATUS = 'accepted'
   WHERE A.sit_site_id = 'MLB'
 ),
 
@@ -196,6 +206,7 @@ SELECT
     prop.FLAG_APP_ATIVO                                                                       AS flag_app_ativo,
     prop.FLAG_TC                                                                              AS flag_tc,
     prop.segmento                                                                             AS segmento,
+    prop.flag_ea                                                                              AS flag_ea,
     STRING_AGG(DISTINCT c.NOTIFICATION_TITLE_DESC, ' | ' ORDER BY c.NOTIFICATION_TITLE_DESC) AS titulos,
     STRING_AGG(DISTINCT c.NOTIFICATION_TEXT_DESC,  ' | ' ORDER BY c.NOTIFICATION_TEXT_DESC)  AS corpos,
     ANY_VALUE(te.qtd_total_encendido)                                                         AS qtd_total_encendido,
@@ -221,5 +232,6 @@ GROUP BY
     c.CAMPAIGN,
     prop.FLAG_APP_ATIVO,
     prop.FLAG_TC,
-    prop.segmento
-ORDER BY anomes_encendido, campaign, segmento, flag_tc, flag_app_ativo
+    prop.segmento,
+    prop.flag_ea
+ORDER BY anomes_encendido, campaign, segmento, flag_tc, flag_app_ativo, flag_ea
