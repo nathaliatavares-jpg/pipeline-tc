@@ -133,6 +133,7 @@ comunic AS (
            AND NOTIFICATION_TEXT_DESC  = 'Peça grátis seu Cartão de Crédito Mercado Pago e compre no Mercado Livre em até 18x sem juros.'
                                                                           THEN 'D4 FULL'
       WHEN CAMPAIGN_NAME = 'MLB-ML-I-EG-XSELLT1-PUSH-CCARDACQ-D1-MIC'   THEN 'D1 MICRO'
+      WHEN CAMPAIGN_NAME = 'flows_communication_MLB_I_EG_NEW_TC_SOL_ENC_mer_1t0' THEN 'D1 MICRO'
       WHEN CAMPAIGN_NAME = 'MLB-ML-C-EG-ACT-PUSH-CCARDACQ-D6-MIC'        THEN 'D6 MICRO'
       WHEN CAMPAIGN_NAME = 'MLB_MP_ML-PUSHML_CCC_X_AO-ACQ_ALL_TXS_X_X_DEFAULT_C-EG-CCARDACQ-SIN-TC-ENR-ML' THEN 'D10 FULL'
       WHEN CAMPAIGN_NAME = 'MLB-MP-I-EG-XSELLT1-PUSH-SOL-TC2'            THEN 'D10 FULL'
