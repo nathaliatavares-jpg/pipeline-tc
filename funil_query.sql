@@ -211,6 +211,7 @@ SELECT
     STRING_AGG(DISTINCT c.NOTIFICATION_TEXT_DESC,  ' | ' ORDER BY c.NOTIFICATION_TEXT_DESC)  AS corpos,
     ANY_VALUE(te.qtd_total_encendido)                                                         AS qtd_total_encendido,
     COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END)                        AS qtd_sent,
+    COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END)                        AS qtd_sent,
     COUNT(DISTINCT CASE WHEN c.fl_arrived THEN prop.ccard_prop_id END)                        AS qtd_arrived,
     COUNT(DISTINCT CASE WHEN c.fl_shown   THEN prop.ccard_prop_id END)                        AS qtd_shown,
     COUNT(DISTINCT CASE WHEN c.fl_open    THEN prop.ccard_prop_id END)                        AS qtd_open,
