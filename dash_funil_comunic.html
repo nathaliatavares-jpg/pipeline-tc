@@ -5273,10 +5273,13 @@ function updateDashboard() {
     );
 
     // Notification info
-    const combos = [...new Map(
-        rows.filter(d => d.titulos)
-            .map(d => [d.titulos+'|||'+d.corpos, { titulos: d.titulos, corpos: d.corpos }])
-    ).values()];
+    // Deduplica por titulo+corpo normalizados (trim + lowercase da chave)
+    const combosMap = new Map();
+    rows.filter(d => d.titulos).forEach(d => {
+        const key = (d.titulos||'').trim().toLowerCase() + '|||' + (d.corpos||'').trim().toLowerCase();
+        if (!combosMap.has(key)) combosMap.set(key, { titulos: d.titulos, corpos: d.corpos });
+    });
+    const combos = [...combosMap.values()];
 
     const notifCard = document.getElementById('notifCard');
     if (combos.length) {
