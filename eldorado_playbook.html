@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eldorado — Playbook Histórico | Mercado Pago</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg2: #1e293b;
+    --bg3: #334155;
+    --border: #475569;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --orange: #fb923c;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15,23,42,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-brand {
+    font-weight: 700; font-size: 16px;
+    color: var(--accent);
+    margin-right: 16px;
+    white-space: nowrap;
+  }
+  .nav-brand span { color: var(--text2); font-weight: 400; font-size: 13px; margin-left: 6px; }
+  nav a {
+    color: var(--text2); text-decoration: none;
+    font-size: 13px; padding: 6px 10px; border-radius: 6px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  nav a:hover { color: var(--text); background: var(--bg3); }
+  .nav-hist-only { display: inline; }
+
+  /* TAB BAR */
+  .tab-bar {
+    position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
+    background: rgba(15,23,42,0.97);
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 4px;
+    height: 48px;
+  }
+  .tab {
+    background: none; border: none; cursor: pointer;
+    color: var(--text2); font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 8px 18px; border-radius: 8px 8px 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+  }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(56,189,248,0.07);
+  }
+
+  /* LAYOUT */
+  .main { padding-top: 104px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    padding: 80px 0 64px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-badge {
+    display: inline-block; background: rgba(56,189,248,0.12);
+    color: var(--accent); border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 20px; padding: 4px 14px; font-size: 12px;
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { font-size: 17px; color: var(--text2); max-width: 600px; margin-bottom: 32px; }
+  .hero-stats {
+    display: flex; gap: 32px; flex-wrap: wrap; margin-top: 32px;
+    padding-top: 32px; border-top: 1px solid var(--border);
+  }
+  .hero-stat .value { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .hero-stat .label { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+  /* TITLES */
+  .section-title {
+    font-size: 26px; font-weight: 700; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .num {
+    width: 32px; height: 32px; background: var(--accent);
+    color: var(--bg); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; flex-shrink: 0;
+  }
+  .section-sub { color: var(--text2); font-size: 15px; margin-bottom: 36px; }
+
+  /* MECHANISM */
+  .flow {
+    display: flex; align-items: center; gap: 0;
+    flex-wrap: wrap; margin: 32px 0; gap: 4px;
+  }
+  .flow-step {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px;
+    text-align: center; min-width: 140px; flex: 1;
+  }
+  .flow-step .icon { font-size: 22px; margin-bottom: 6px; }
+  .flow-step .title { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .flow-step .desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .flow-arrow {
+    color: var(--border); font-size: 20px; padding: 0 4px;
+    flex-shrink: 0;
+  }
+  .rules-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 28px 0;
+  }
+  .rule-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px;
+  }
+  .rule-card .rule-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .rule-card .rule-value { font-size: 20px; font-weight: 700; color: var(--text); }
+  .rule-card .rule-note { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  .segment-table-wrap { overflow-x: auto; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--bg3); color: var(--text2);
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(71,85,105,0.4);
+    font-size: 14px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block; border-radius: 6px; padding: 2px 8px;
+    font-size: 12px; font-weight: 700;
+  }
+  .badge-green { background: rgba(52,211,153,0.15); color: var(--green); }
+  .badge-yellow { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .badge-orange { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-purple { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .badge-blue { background: rgba(56,189,248,0.15); color: var(--accent); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 6px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .tl-phase { margin-bottom: 40px; }
+  .tl-phase-label {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent2); margin-bottom: 12px;
+    padding-left: 4px;
+  }
+  .tl-entries { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .tl-card {
+    position: relative; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .tl-card::before {
+    content: ''; position: absolute;
+    left: -26px; top: 18px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bg3); border: 2px solid var(--border);
+  }
+  .tl-card.highlight { border-color: var(--yellow); }
+  .tl-card.highlight::before { background: var(--yellow); border-color: var(--yellow); }
+  .tl-card.record { border-color: var(--green); }
+  .tl-card.record::before { background: var(--green); border-color: var(--green); }
+  .tl-card.worst { border-color: var(--red); }
+  .tl-card.worst::before { background: var(--red); border-color: var(--red); }
+  .tl-card.proj { border-style: dashed; }
+  .tl-month { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+  .tl-tcs { font-size: 20px; font-weight: 800; color: var(--text); }
+  .tl-tcs span { font-size: 12px; color: var(--text2); font-weight: 400; }
+  .tl-row { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--text2); }
+  .tl-cac { font-weight: 700; }
+  .tl-obs { font-size: 11px; color: var(--text2); margin-top: 6px; font-style: italic; }
+  .tl-cupom { font-size: 11px; margin-top: 4px; color: var(--text2); }
+
+  /* PHASES */
+  .phases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
+  .phase-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    border-top: 3px solid var(--accent2);
+  }
+  .phase-card:nth-child(2) { border-top-color: var(--green); }
+  .phase-card:nth-child(3) { border-top-color: var(--yellow); }
+  .phase-card:nth-child(4) { border-top-color: var(--teal); }
+  .phase-num { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); margin-bottom: 8px; }
+  .phase-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .phase-period { font-size: 13px; color: var(--accent); margin-bottom: 12px; }
+  .phase-list { list-style: none; }
+  .phase-list li { font-size: 13px; color: var(--text2); padding: 4px 0; padding-left: 14px; position: relative; }
+  .phase-list li::before { content: '—'; position: absolute; left: 0; color: var(--border); }
+
+  /* LEARNINGS */
+  .learnings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 28px; }
+  .learning-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 22px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .learning-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .ic-red { background: rgba(248,113,113,0.15); }
+  .ic-green { background: rgba(52,211,153,0.15); }
+  .ic-yellow { background: rgba(251,191,36,0.15); }
+  .ic-blue { background: rgba(56,189,248,0.15); }
+  .ic-purple { background: rgba(167,139,250,0.15); }
+  .ic-orange { background: rgba(251,146,60,0.15); }
+  .ic-teal { background: rgba(45,212,191,0.15); }
+  .learning-content .l-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .learning-content .l-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .learning-content .l-key {
+    display: inline-block; margin-top: 8px;
+    background: rgba(56,189,248,0.1); color: var(--accent);
+    border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700;
+  }
+
+  /* EFFICIENCY CHART */
+  .chart-section { margin-top: 32px; }
+  .chart-label { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+  .chart-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .chart-row .cr-month { width: 60px; font-size: 12px; color: var(--text2); text-align: right; flex-shrink: 0; }
+  .chart-row .cr-bar-wrap { flex: 1; position: relative; height: 22px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+  .chart-row .cr-bar { height: 100%; border-radius: 4px; transition: width 0.3s; display: flex; align-items: center; padding-left: 8px; }
+  .chart-row .cr-val { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); white-space: nowrap; }
+  .chart-row .cr-cac { width: 80px; font-size: 12px; text-align: right; color: var(--text2); flex-shrink: 0; }
+  .chart-legend { display: flex; gap: 20px; margin: 16px 0 8px; font-size: 12px; color: var(--text2); }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .chart-legend .dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* GUIDE TABLE */
+  .guide-table td:nth-child(1) { font-weight: 700; }
+  .never { color: var(--red); font-weight: 700; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 32px 24px; text-align: center;
+  }
+  footer .footer-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  footer p { font-size: 13px; color: var(--text2); }
+  footer .footer-meta { margin-top: 16px; font-size: 12px; color: var(--border); }
+
+  /* MISC */
+  .info-box {
+    background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 10px; padding: 16px 20px; margin: 20px 0;
+    font-size: 14px; color: var(--text2);
+  }
+  .info-box strong { color: var(--accent); }
+
+  /* ===================== SIMULADOR v2 ===================== */
+  .sim-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #0f172a 100%);
+    padding: 40px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sim-hero h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; }
+  .sim-hero h1 span { color: var(--accent2); }
+  .sim-hero p { font-size: 15px; color: var(--text2); }
+
+  /* INPUTS PANEL */
+  .input-group { margin-bottom: 18px; }
+  .input-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 600; color: var(--text);
+    margin-bottom: 8px;
+  }
+  .input-label .input-val {
+    font-size: 14px; font-weight: 800; color: var(--accent);
+    background: rgba(56,189,248,0.1); padding: 2px 10px;
+    border-radius: 6px; min-width: 80px; text-align: center;
+  }
+
+  /* SLIDER */
+  input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(to right, #38bdf8 50%, #334155 50%);
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: #38bdf8; border-radius: 50%;
+    cursor: pointer; border: 2px solid #0f172a;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    background: #38bdf8; border-radius: 50%;
+    border: 2px solid #0f172a; cursor: pointer;
+  }
+  input[type=range]::-moz-range-track {
+    height: 4px; border-radius: 2px; background: #334155;
+  }
+  .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* SELECT */
+  select {
+    background: var(--bg3); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 32px 7px 10px; font-size: 13px; font-family: inherit;
+    cursor: pointer; outline: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  select:focus { border-color: var(--accent); }
+  select.sel-cupom { width: 100%; }
+
+  /* ---- GLOBAL CONTROLS BAR ---- */
+  .sim-global {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+  .sim-global-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap;
+  }
+  .sim-global-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text2); margin-bottom: 12px;
+  }
+  .global-base-group { flex: 1; min-width: 220px; }
+  .global-mes-group { min-width: 160px; }
+  .saz-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; margin-left: 10px;
+    vertical-align: middle;
+  }
+  .saz-red    { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+  .saz-orange { background: rgba(251,146,60,0.15);  color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+  .saz-green  { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+  .saz-gray   { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+
+  /* ---- NISE BLOCKS ---- */
+  .sim-blocks {
+    max-width: 1200px; margin: 0 auto; padding: 24px 24px 120px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .nise-block {
+    border-radius: 16px; border: 2px solid;
+    overflow: hidden;
+  }
+  .nise-silver { border-color: rgba(34,197,94,0.5); }
+  .nise-gold   { border-color: rgba(251,191,36,0.5); }
+  .nise-plat   { border-color: rgba(59,130,246,0.5); }
+
+  .nise-header {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 16px 20px;
+  }
+  .nise-silver .nise-header { background: rgba(34,197,94,0.08); }
+  .nise-gold   .nise-header { background: rgba(251,191,36,0.08); }
+  .nise-plat   .nise-header { background: rgba(59,130,246,0.08); }
+
+  .nise-name {
+    font-size: 18px; font-weight: 800;
+  }
+  .nise-silver .nise-name { color: #22c55e; }
+  .nise-gold   .nise-name { color: #fbbf24; }
+  .nise-plat   .nise-name { color: #3b82f6; }
+
+  .nise-base-info { font-size: 13px; color: var(--text2); }
+  .nise-base-info strong { color: var(--text); }
+
+  /* Toggle pill */
+  .toggle-pill {
+    display: flex; border-radius: 20px; border: 1px solid var(--border);
+    overflow: hidden; margin-left: auto; flex-shrink: 0;
+  }
+  .toggle-pill button {
+    background: none; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    color: var(--text2); padding: 5px 14px;
+    transition: all 0.2s;
+  }
+  .nise-silver .toggle-pill button.active { background: rgba(34,197,94,0.2);  color: #22c55e; box-shadow: inset 0 0 0 1px rgba(34,197,94,0.6); }
+  .nise-gold   .toggle-pill button.active { background: rgba(251,191,36,0.2); color: #fbbf24; box-shadow: inset 0 0 0 1px rgba(251,191,36,0.6); }
+  .nise-plat   .toggle-pill button.active { background: rgba(59,130,246,0.2); color: #3b82f6; box-shadow: inset 0 0 0 1px rgba(59,130,246,0.6); }
+
+  .nise-body { padding: 20px; }
+
+  /* Segment row */
+  .seg-row {
+    background: var(--bg3); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 12px; align-items: center;
+  }
+  .seg-row:last-child { margin-bottom: 0; }
+
+  .seg-label {
+    font-size: 12px; font-weight: 800; text-align: center;
+    padding: 4px 8px; border-radius: 6px;
+  }
+  .seg-silver { background: rgba(34,197,94,0.15);  color: #22c55e; }
+  .seg-gold   { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .seg-plat   { background: rgba(59,130,246,0.15); color: #3b82f6; }
+
+  .seg-ctrl { display: flex; flex-direction: column; gap: 4px; }
+  .seg-ctrl label { font-size: 10px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .seg-out {
+    background: var(--bg2); border-radius: 8px; padding: 8px 10px;
+    text-align: center;
+  }
+  .seg-out .so-label { font-size: 10px; color: var(--text2); margin-bottom: 2px; text-transform: uppercase; font-weight: 700; }
+  .seg-out .so-val { font-size: 15px; font-weight: 800; }
+  .seg-out .so-warn { font-size: 10px; margin-top: 2px; }
+
+  /* Slider cores por segmento */
+  .slider-silver::-webkit-slider-thumb { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
+  .slider-gold::-webkit-slider-thumb   { background: #fbbf24; box-shadow: 0 0 0 2px #fbbf24; }
+  .slider-plat::-webkit-slider-thumb   { background: #3b82f6; box-shadow: 0 0 0 2px #3b82f6; }
+
+  /* Alerta inline */
+  .seg-alert {
+    grid-column: 1 / -1; border-radius: 8px; padding: 7px 12px;
+    font-size: 12px; font-weight: 600; display: none;
+  }
+  .seg-alert.show { display: block; }
+  .seg-alert-red { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+  .seg-alert-orange { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+  .seg-alert-yellow { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+  /* ---- STICKY TOTAL PANEL ---- */
+  .sim-total {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 98;
+    background: rgba(30,41,59,0.97);
+    border-top: 2px solid var(--border);
+    backdrop-filter: blur(12px);
+    padding: 12px 24px;
+  }
+  .sim-total-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .total-item { text-align: center; }
+  .total-label { font-size: 10px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .total-val { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.1; }
+  .total-divider { width: 1px; height: 36px; background: var(--border); }
+  .total-conf-badge {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
+    margin-left: auto;
+  }
+  .total-mes-badge {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    background: rgba(56,189,248,0.1); color: var(--accent); border: 1px solid rgba(56,189,248,0.3);
+  }
+
+  @media (max-width: 1000px) {
+    .seg-row { grid-template-columns: 60px 1fr 1fr 1fr 1fr; }
+    .seg-row .seg-out:nth-child(7) { display: none; }
+  }
+  @media (max-width: 768px) {
+    nav a { display: none; }
+    .hero h1 { font-size: 28px; }
+    .tl-entries { grid-template-columns: 1fr 1fr; }
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+    .hero-stats { gap: 20px; }
+    .nav-hist-only { display: none; }
+    .seg-row { grid-template-columns: 1fr 1fr; }
+    .seg-label { grid-column: 1/-1; }
+  }
+
+  /* compat for old .out-card references in historico */
+  .out-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+    transition: border-color 0.3s;
+  }
+  .out-card.primary { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.05); }
+  .out-card .oc-label {
+    font-size: 11px; font-weight: 700; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+  }
+  .out-card .oc-value {
+    font-size: 26px; font-weight: 800; color: var(--text);
+    line-height: 1.1;
+  }
+  .out-card .oc-value.accent { color: var(--accent); }
+  .out-card .oc-value.green { color: var(--green); }
+  .out-card .oc-value.yellow { color: var(--yellow); }
+  .out-card .oc-value.red { color: var(--red); }
+  .out-card .oc-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  /* CONFIANÇA */
+  .confidence-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px;
+  }
+  .confidence-card .cc-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .confidence-card .cc-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+  }
+  .confidence-card .cc-pct {
+    font-size: 22px; font-weight: 800;
+  }
+  .confidence-bar-bg {
+    width: 100%; height: 10px; background: var(--bg3);
+    border-radius: 5px; overflow: hidden; margin-bottom: 10px;
+  }
+  .confidence-bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.5s, background 0.5s;
+  }
+  .conf-text { font-size: 13px; color: var(--text2); }
+  .conf-warning {
+    margin-top: 10px; padding: 10px 14px;
+    background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 8px; font-size: 13px; color: var(--yellow); display: none;
+  }
+
+  /* MATCH HISTÓRICO */
+  .match-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px;
+  }
+  .match-card .mc-title { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .match-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid rgba(71,85,105,0.3);
+  }
+  .match-item:last-child { border-bottom: none; }
+  .match-month { font-size: 15px; font-weight: 800; color: var(--accent); min-width: 60px; }
+  .match-detail { font-size: 13px; color: var(--text2); flex: 1; }
+  .match-score { font-size: 12px; font-weight: 700; color: var(--text2); }
+
+  /* COMPARAÇÃO */
+  .comparison-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px;
+  }
+  .comparison-card h3 { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table th {
+    background: var(--bg3); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 12px; color: var(--text2); text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-table td {
+    padding: 9px 12px; font-size: 13px;
+    border-bottom: 1px solid rgba(71,85,105,0.3);
+  }
+  .comp-table tr.highlighted-row td { background: rgba(56,189,248,0.07); }
+  .comp-table tr.highlighted-row td:first-child { color: var(--accent); font-weight: 800; }
+  .comp-table td.good { color: var(--green); font-weight: 700; }
+  .comp-table td.bad { color: var(--red); font-weight: 700; }
+  .comp-table td.mid { color: var(--yellow); font-weight: 700; }
+
+  /* NOV badge */
+  .nov-badge {
+    display: inline-block; background: rgba(251,191,36,0.15);
+    color: var(--yellow); border-radius: 4px;
+    padding: 1px 6px; font-size: 11px; font-weight: 700;
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Eldorado <span>Playbook</span></div>
+  <span class="nav-hist-only">
+    <a href="#o-que-e">O que é</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#fases">Fases</a>
+    <a href="#aprendizados">Aprendizados</a>
+    <a href="#guia">Guia</a>
+    <a href="#eficiencia">Eficiência</a>
+  </span>
+</nav>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab active" id="tab-btn-historico" onclick="showTab('historico', this)">&#128202; Histórico</button>
+  <button class="tab" id="tab-btn-simulador" onclick="showTab('simulador', this)">&#129518; Simulador</button>
+</div>
+
+<div class="main">
+
+<!-- ===================== ABA HISTÓRICO ===================== -->
+<div id="tab-historico" class="tab-content active">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-badge">Programa de Incentivo — Mercado Pago</div>
+    <h1>Playbook <span>Eldorado</span></h1>
+    <p>Registro histórico institucional do programa: 2 anos de campanhas, dados reais e aprendizados estratégicos para onboarding e decisão da liderança.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="value">516K+</div>
+        <div class="label">TCs acumulados (Set/24–Jun/26)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">R$75</div>
+        <div class="label">Melhor CAC histórico (Out/25)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">45.644</div>
+        <div class="label">TCs em um mês (Nov/25 — recorde)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">22 meses</div>
+        <div class="label">Histórico de campanhas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 1 — O QUE É -->
+<div class="section" id="o-que-e">
+  <div class="container">
+    <div class="section-title"><div class="num">1</div> O que é o Eldorado</div>
+    <div class="section-sub">Mecanismo, regras e segmentação do programa</div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="icon">&#128100;</div>
+        <div class="title">Usuário elegível</div>
+        <div class="desc">Tem TC pré-aprovado pela área de Riscos, mas ainda não aceitou</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        <div class="icon">&#128179;</div>
+        <div class="title">Aceita o cartão</div>
+        <div class="desc">Aceita o TC (cartão TCMP) — ativação conta como conversão</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        <div class="icon">&#128722;</div>
+        <div class="title">Compra no ML</div>
+        <div class="desc">Realiza compra no Mercado Livre usando o TCMP</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        <div class="icon">&#127974;</div>
+        <div class="title">Recebe desconto</div>
+        <div class="desc">Desconto aplicado automaticamente na compra</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        <div class="icon">&#128200;</div>
+        <div class="title">TC ativado</div>
+        <div class="desc">Usuário vira cliente com cartão em uso — CAC realizado</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:32px 0 16px;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;font-size:12px;">Regras do Programa</h3>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-label">Limite por CPF</div>
+        <div class="rule-value">1 desconto</div>
+        <div class="rule-note">Cada usuário usa apenas um cupom, uma vez</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Validade do cupom</div>
+        <div class="rule-value">7 dias</div>
+        <div class="rule-note">Após aceitar o TC, tem 7 dias para usar. 81% usa em até 3 dias.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Compra mínima</div>
+        <div class="rule-value">2× o cupom</div>
+        <div class="rule-note">Ex.: cupom R$50 → mínimo R$100 de compra</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Elegibilidade</div>
+        <div class="rule-value">Área de Riscos</div>
+        <div class="rule-note">Define quem recebe oferta de TC (NISE, Rating, Score)</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Segmentação</div>
+        <div class="rule-value">Time de Negócios</div>
+        <div class="rule-note">Define valor do cupom por segmento (NISE × Rating)</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Canal</div>
+        <div class="rule-value">Mercado Pago e Mercado Livre</div>
+        <div class="rule-note">Oferta exibida in-app para usuários elegíveis</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;margin:32px 0 12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Segmentos e Valores de Cupom</h3>
+    <div class="segment-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>NISE</th>
+            <th>Rating</th>
+            <th>Segmento</th>
+            <th>Cupom padrão</th>
+            <th>Compra mínima</th>
+            <th>Perfil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Silver</td><td>A</td><td>Silver A</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td>R$70</td>
+            <td style="color:var(--text2);font-size:13px;">Base ampla, sensível ao desconto</td>
+          </tr>
+          <tr>
+            <td>Silver</td><td>B</td><td>Silver B</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td>R$70</td>
+            <td style="color:var(--text2);font-size:13px;">Histórico de CAC alto com R$70</td>
+          </tr>
+          <tr>
+            <td>Gold</td><td>A</td><td>Gold A</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td style="color:var(--text2);font-size:13px;">Bom lift, responde bem ao R$50</td>
+          </tr>
+          <tr>
+            <td>Gold</td><td>B</td><td>Gold B</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td style="color:var(--text2);font-size:13px;">R$35 gera CAC ineficiente (R$580)</td>
+          </tr>
+          <tr>
+            <td>Platinum</td><td>A</td><td>Platinum A</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td>R$140</td>
+            <td style="color:var(--text2);font-size:13px;">Base menor, ticket alto, exige cupom maior</td>
+          </tr>
+          <tr>
+            <td>Platinum</td><td>B</td><td>Platinum B</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td style="color:var(--text2);font-size:13px;">NUNCA R$35 — lift historicamente negativo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>Only Nav:</strong> Segmento com controle próprio em todos os meses. Lift de <strong>+26,2%</strong> confirmado em Jun/26 — acima da média da campanha. Deve ser mantido na base independente da segmentação principal. Único grupo com lift positivo robusto e consistente.</div>
+  </div>
+</div>
+
+<!-- SEÇÃO 2 — TIMELINE -->
+<div class="section" id="timeline">
+  <div class="container">
+    <div class="section-title"><div class="num">2</div> Timeline de Campanhas</div>
+    <div class="section-sub">Set/24 até Jun/26 — dados reais por mês. Cards destacados indicam marcos históricos.</div>
+
+    <div class="timeline">
+
+      <!-- FASE 1 -->
+      <div class="tl-phase">
+        <div class="tl-phase-label">Fase 1 — Exploração (Set/24 – Mai/25)</div>
+        <div class="tl-entries">
+          <div class="tl-card">
+            <div class="tl-month">Set/24</div>
+            <div class="tl-tcs">10.412 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$0,97M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$93</span></div>
+            <div class="tl-cupom">Cupom: R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">19.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">51.0%</span></div>
+            <div class="tl-obs">Início da análise histórica</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Out/24</div>
+            <div class="tl-tcs">11.287 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$0,95M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$85</span></div>
+            <div class="tl-cupom">Cupom: R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">28.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">52.0%</span></div>
+          </div>
+          <div class="tl-card highlight">
+            <div class="tl-month">Nov/24</div>
+            <div class="tl-tcs">30.410 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$3,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$105</span></div>
+            <div class="tl-cupom">Cupom: R$70 + R$35 + R$20</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">25.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">63.0%</span></div>
+            <div class="tl-obs">1º Novembro excepcional</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Dez/24</div>
+            <div class="tl-tcs">15.715 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$1,50M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$95</span></div>
+            <div class="tl-cupom">Cupom: R$50 + R$70</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">21.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">57.0%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Jan/25</div>
+            <div class="tl-tcs">11.691 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$1,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$103</span></div>
+            <div class="tl-cupom">Cupom: R$50 + R$150</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">23.8%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">54.9%</span></div>
+            <div class="tl-obs">Teste com R$150</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Fev/25</div>
+            <div class="tl-tcs">8.150 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$1,10M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$135</span></div>
+            <div class="tl-cupom">Cupom: R$50 + R$70</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">20.6%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">51.3%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Mar/25</div>
+            <div class="tl-tcs">10.475 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$1,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$115</span></div>
+            <div class="tl-cupom">Cupom: R$50 + R$70</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">25.5%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">52.0%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Abr/25</div>
+            <div class="tl-tcs">24.030 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$2,90M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$121</span></div>
+            <div class="tl-cupom">Cupom: R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">31.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">59.0%</span></div>
+            <div class="tl-obs">Mês longo</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Mai/25</div>
+            <div class="tl-tcs">17.485 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$2,00M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$114</span></div>
+            <div class="tl-cupom">Cupom: R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">30.3%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">58.0%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 2 -->
+      <div class="tl-phase">
+        <div class="tl-phase-label">Fase 2 — Escala (Jun/25 – Out/25)</div>
+        <div class="tl-entries">
+          <div class="tl-card highlight">
+            <div class="tl-month">Jun/25</div>
+            <div class="tl-tcs">39.576 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$4,80M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$121</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">32.9%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">52.4%</span></div>
+            <div class="tl-obs">Mês excepcional</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Jul/25</div>
+            <div class="tl-tcs">9.177 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$0,70M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$76</span></div>
+            <div class="tl-cupom">Cupom: R$35</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">26.0%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">50.0%</span></div>
+            <div class="tl-obs">Mês curto</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Ago/25</div>
+            <div class="tl-tcs">16.447 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$1,40M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$85</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">28.8%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">44.3%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Set/25</div>
+            <div class="tl-tcs">30.790 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$2,80M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$91</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">25.5%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">56.3%</span></div>
+          </div>
+          <div class="tl-card record">
+            <div class="tl-month">Out/25</div>
+            <div class="tl-tcs">42.713 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$3,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--green)">R$75</span></div>
+            <div class="tl-cupom">Cupom: R$20 + R$35 + R$50</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">23.7%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">61.1%</span></div>
+            <div class="tl-obs">MELHOR CAC HISTORICO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 3 -->
+      <div class="tl-phase">
+        <div class="tl-phase-label">Fase 3 — Pico e Análise (Nov/25 – Mar/26)</div>
+        <div class="tl-entries">
+          <div class="tl-card record">
+            <div class="tl-month">Nov/25</div>
+            <div class="tl-tcs">45.644 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$5,70M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$125</span></div>
+            <div class="tl-cupom">Cupom: R$20 + R$35 + R$70</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">31.7%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">64.4%</span></div>
+            <div class="tl-obs">RECORDE ABSOLUTO — Data Dupla + Encendido</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Dez/25</div>
+            <div class="tl-tcs">28.330 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$3,10M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$109</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50 + R$70</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">21.5%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">58.4%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Jan/26</div>
+            <div class="tl-tcs">21.283 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$2,90M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$136</span></div>
+            <div class="tl-cupom">Cupom: R$70 + R$35 + R$20</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">29.1%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">51.5%</span></div>
+            <div class="tl-obs">Início migração R$70 para R$50</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Fev/26</div>
+            <div class="tl-tcs">32.780 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$4,90M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$149</span></div>
+            <div class="tl-cupom">Cupom: R$70 + R$50 + R$20</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">36.7%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">62.6%</span></div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-month">Mar/26</div>
+            <div class="tl-tcs">32.622 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$4,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$129</span></div>
+            <div class="tl-cupom">Cupom: R$70 + R$35 + R$20</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">31.2%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">62.1%</span></div>
+            <div class="tl-obs">Último mês com R$70 BAU</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 4 -->
+      <div class="tl-phase">
+        <div class="tl-phase-label">Fase 4 — Otimização (Abr/26 – hoje)</div>
+        <div class="tl-entries">
+          <div class="tl-card">
+            <div class="tl-month">Abr/26</div>
+            <div class="tl-tcs">22.738 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$2,20M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text)">R$98</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50 BAU</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">34.6%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">53.2%</span></div>
+            <div class="tl-obs">Cada grupo com controle próprio</div>
+          </div>
+          <div class="tl-card worst">
+            <div class="tl-month">Mai/26</div>
+            <div class="tl-tcs">21.625 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">R$4,30M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--red)">R$199</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50 — 10 campanhas</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">37.8%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">58.7%</span></div>
+            <div class="tl-obs">PIOR eficiência — budget 2×, TCs iguais</div>
+          </div>
+          <div class="tl-card proj">
+            <div class="tl-month">Jun/26</div>
+            <div class="tl-tcs">~14.500 <span>TCs</span></div>
+            <div class="tl-row"><span>Custo</span><span class="tl-cac">~R$1,85M</span></div>
+            <div class="tl-row"><span>CAC</span><span class="tl-cac" style="color:var(--text2)">~R$128</span></div>
+            <div class="tl-cupom">Cupom: R$35 + R$50 BAU</div><div class="tl-row" style="margin-top:4px;"><span style="font-size:0.72rem;">% cupom</span><span style="font-size:0.72rem;color:#60a5fa;font-weight:600;">45.2%</span></div><div class="tl-row"><span style="font-size:0.72rem;">% uso cartão</span><span style="font-size:0.72rem;color:#4ade80;font-weight:600;">61.0%</span></div>
+            <div class="tl-obs">Projeção (10 dias reais)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 3 — FASES -->
+<div class="section" id="fases">
+  <div class="container">
+    <div class="section-title"><div class="num">3</div> Fases Estratégicas</div>
+    <div class="section-sub">Evolução do programa em quatro grandes etapas</div>
+    <div class="phases-grid">
+      <div class="phase-card">
+        <div class="phase-num">Fase 1</div>
+        <div class="phase-name">Exploração</div>
+        <div class="phase-period">Set/24 – Mai/25</div>
+        <ul class="phase-list">
+          <li>Cupom único sem segmentação granular</li>
+          <li>Primeiros testes com R$70 e R$20</li>
+          <li>Descoberta do efeito novembro (30K TCs)</li>
+          <li>CAC médio: R$105 (mês típico)</li>
+          <li>Base aprendendo o mecanismo</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Fase 2</div>
+        <div class="phase-name">Escala</div>
+        <div class="phase-period">Jun/25 – Out/25</div>
+        <ul class="phase-list">
+          <li>Expansão de base elegível</li>
+          <li>Múltiplos valores de cupom por mês</li>
+          <li>Outubro/25: melhor CAC histórico (R$75)</li>
+          <li>Introdução do R$20 como segmento base</li>
+          <li>Volume consistentemente acima de 30K/mês</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Fase 3</div>
+        <div class="phase-name">Pico e Análise</div>
+        <div class="phase-period">Nov/25 – Mar/26</div>
+        <ul class="phase-list">
+          <li>Novembro/25: recorde absoluto 45.644 TCs</li>
+          <li>Início da análise por NISE × Rating</li>
+          <li>Identificação dos lift negativos por segmento</li>
+          <li>Migração R$70 para R$50 nos grupos principais</li>
+          <li>CAC subindo: R$125–R$149</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Fase 4</div>
+        <div class="phase-name">Otimização</div>
+        <div class="phase-period">Abr/26 – hoje</div>
+        <ul class="phase-list">
+          <li>Cada segmento com grupo controle próprio</li>
+          <li>Modelo: TCs = Base × Eficiência × (Dias/30)</li>
+          <li>Descoberta: budget 2× não gera TCs 2×</li>
+          <li>Identificação Only Nav (+26,2% lift)</li>
+          <li>Validação do cupom de 3 dias (−5,4% custo)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 4 — APRENDIZADOS -->
+<div class="section" id="aprendizados">
+  <div class="container">
+    <div class="section-title"><div class="num">4</div> O que Aprendemos</div>
+    <div class="section-sub">10 aprendizados estratégicos consolidados em 2 anos de campanhas</div>
+    <div class="learnings-grid">
+
+      <div class="learning-card">
+        <div class="learning-icon ic-red">&#128683;</div>
+        <div class="learning-content">
+          <div class="l-title">Budget não é o driver</div>
+          <div class="l-desc">Mai/26: dobramos o budget (10 campanhas), os TCs ficaram iguais. O driver real é eficiência — quantas TCs por milhão de base.</div>
+          <span class="l-key">Prova: Mai/26 — R$4,3M, 21.625 TCs</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-green">&#128200;</div>
+        <div class="learning-content">
+          <div class="l-title">Fórmula validada</div>
+          <div class="l-desc">TCs = Base × Eficiência × (Dias/30). Modelo com erro menor que 8% nos últimos 6 meses. Permite projeção confiável antes de fechar campanha.</div>
+          <span class="l-key">Erro médio: &lt; 8%</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-yellow">&#128197;</div>
+        <div class="learning-content">
+          <div class="l-title">Novembro é excepcional</div>
+          <div class="l-desc">Combinação única: Data Dupla (11/11) + Encendido de novembro + Pré-Black Friday. Não replicável em outros meses. Planejar com budget separado.</div>
+          <span class="l-key">+50% vs. mês típico</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-blue">&#128293;</div>
+        <div class="learning-content">
+          <div class="l-title">Only Nav tem lift positivo</div>
+          <div class="l-desc">Sempre teve controle próprio. Lift de +26,2% confirmado em Jun/26 — acima da média da campanha. Deve ser mantido na base em qualquer configuração de campanha.</div>
+          <span class="l-key">Lift: +26,2% (Jun/26)</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-red">&#128683;</div>
+        <div class="learning-content">
+          <div class="l-title">Platinum B nunca recebe R$35</div>
+          <div class="l-desc">Histórico consistente de lift negativo. Cupom de R$35 para Platinum B piora a conversão — possivelmente por percepção de valor inadequada ao perfil.</div>
+          <span class="l-key">Regra absoluta</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-purple">&#128181;</div>
+        <div class="learning-content">
+          <div class="l-title">R$70 é volume, não lift</div>
+          <div class="l-desc">R$50 tem melhoria média maior que R$70 (18% vs. 17%). O R$70 compensa em novembro pelo contexto de Data Dupla, mas fora disso eleva custo sem proporcional ganho.</div>
+          <span class="l-key">R$50 > R$70 exceto novembro</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-yellow">&#128197;</div>
+        <div class="learning-content">
+          <div class="l-title">Data dupla gera pico de gasto</div>
+          <div class="l-desc">Dias em que o dia do mês é igual ao mês (11/11, 12/12 etc.) geram +42% de gasto no Mercado Livre. Iniciar campanha antes dessas datas captura o pico.</div>
+          <span class="l-key">+42% no dia</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-teal">&#8679;</div>
+        <div class="learning-content">
+          <div class="l-title">Encendido — pico natural</div>
+          <div class="l-desc">Os dias 5 a 10 do mês concentram pico natural de conversão (paycheck effect). Campanhas iniciadas no dia 1 capturam abertura + encendido completo.</div>
+          <span class="l-key">Dias 5–10 do mês</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-orange">&#9200;</div>
+        <div class="learning-content">
+          <div class="l-title">Iniciar dia 1 é crítico</div>
+          <div class="l-desc">Jun/26 iniciou dia 8 — perdeu abertura de mês E encendido sobrepostos. Os dois picos combinados geram a maior concentração de TCs. Atraso custa mais do que parece.</div>
+          <span class="l-key">Inicio dia 8 = -2 picos perdidos</span>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <div class="learning-icon ic-green">&#127381;</div>
+        <div class="learning-content">
+          <div class="l-title">Cupom de 3 dias reduz custo</div>
+          <div class="l-desc">81% dos usuários usa o cupom em até 3 dias após aceitar. Reduzir validade de 7 para 3 dias gerou -5,4% de custo sem perda de TCs. Usuários não consultam o prazo.</div>
+          <span class="l-key">-5,4% custo, 0 perda de TCs</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 5 — GUIA DE DECISÃO -->
+<div class="section" id="guia">
+  <div class="container">
+    <div class="section-title"><div class="num">5</div> Guia de Decisão</div>
+    <div class="section-sub">Quick reference por segmento — cupom padrão, mínimo de compra e restrições absolutas</div>
+    <div class="segment-table-wrap">
+      <table class="guide-table">
+        <thead>
+          <tr>
+            <th>Segmento</th>
+            <th>Cupom padrão</th>
+            <th>Compra mínima</th>
+            <th>Em Novembro</th>
+            <th>NUNCA usar</th>
+            <th>Motivo da restrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Silver A</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td>R$70</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td class="never">R$50</td>
+            <td style="color:var(--text2);font-size:13px;">Base menor com R$50 — CAC piora sem compensação</td>
+          </tr>
+          <tr>
+            <td>Silver B</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td>R$70</td>
+            <td><span class="badge badge-green">R$35</span></td>
+            <td class="never">R$70</td>
+            <td style="color:var(--text2);font-size:13px;">CAC histórico R$2.141 com R$70</td>
+          </tr>
+          <tr>
+            <td>Gold A</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td class="never">R$35</td>
+            <td style="color:var(--text2);font-size:13px;">CAC R$125 com R$35 — sub-ótimo para o perfil</td>
+          </tr>
+          <tr>
+            <td>Gold B</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td class="never">R$35</td>
+            <td style="color:var(--text2);font-size:13px;">CAC R$580 com R$35 — inviável</td>
+          </tr>
+          <tr>
+            <td>Platinum A</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td>R$140</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td class="never">R$35</td>
+            <td style="color:var(--text2);font-size:13px;">Base irrelevante — ticket alto exige cupom maior</td>
+          </tr>
+          <tr>
+            <td>Platinum B</td>
+            <td><span class="badge badge-yellow">R$50</span></td>
+            <td>R$100</td>
+            <td><span class="badge badge-orange">R$70</span></td>
+            <td class="never">R$35</td>
+            <td style="color:var(--text2);font-size:13px;">LIFT NEGATIVO historicamente confirmado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box" style="margin-top:24px;">
+      <strong>Regra geral de escalada:</strong> Em novembro, todos os segmentos podem subir um degrau (Silver R$35 fica, Gold vai para R$70, Platinum mantém R$70). O budget extra se justifica pelo volume excepcional do mês. Nos demais meses, manter a tabela acima.
+    </div>
+  </div>
+</div>
+
+<!-- SEÇÃO 6 — EFICIÊNCIA -->
+<div class="section" id="eficiencia">
+  <div class="container">
+    <div class="section-title"><div class="num">6</div> Curva Histórica de Eficiência</div>
+    <div class="section-sub">TCs totais e CAC mensal ao longo do tempo — outliers destacados</div>
+
+    <div class="chart-legend">
+      <span><div class="dot" style="background:var(--accent)"></div> CAC abaixo de R$100 (eficiente)</span>
+      <span><div class="dot" style="background:var(--yellow)"></div> Mês excepcional / recorde</span>
+      <span><div class="dot" style="background:var(--red)"></div> Pior eficiência</span>
+      <span><div class="dot" style="background:var(--text2)"></div> Projeção</span>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-label">Volume de TCs por mês (largura da barra = volume relativo ao recorde de 45.644)</div>
+
+      <!-- Linhas do gráfico -->
+      <div class="chart-row"><div class="cr-month">Set/24</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:22.8%;background:var(--accent)"><div class="cr-val">10.412</div></div></div><div class="cr-cac">CAC R$93</div></div>
+      <div class="chart-row"><div class="cr-month">Out/24</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:24.7%;background:var(--accent)"><div class="cr-val">11.287</div></div></div><div class="cr-cac">CAC R$85</div></div>
+      <div class="chart-row"><div class="cr-month">Nov/24</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:66.6%;background:var(--yellow)"><div class="cr-val">30.410 — 1º Novembro excepcional</div></div></div><div class="cr-cac">CAC R$105</div></div>
+      <div class="chart-row"><div class="cr-month">Dez/24</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:34.4%;background:var(--bg3)"><div class="cr-val">15.715</div></div></div><div class="cr-cac">CAC R$95</div></div>
+      <div class="chart-row"><div class="cr-month">Jan/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:25.6%;background:var(--bg3)"><div class="cr-val">11.691</div></div></div><div class="cr-cac">CAC R$103</div></div>
+      <div class="chart-row"><div class="cr-month">Fev/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:17.8%;background:var(--bg3)"><div class="cr-val">8.150</div></div></div><div class="cr-cac">CAC R$135</div></div>
+      <div class="chart-row"><div class="cr-month">Mar/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:22.9%;background:var(--bg3)"><div class="cr-val">10.475</div></div></div><div class="cr-cac">CAC R$115</div></div>
+      <div class="chart-row"><div class="cr-month">Abr/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:52.6%;background:var(--bg3)"><div class="cr-val">24.030</div></div></div><div class="cr-cac">CAC R$121</div></div>
+      <div class="chart-row"><div class="cr-month">Mai/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:38.3%;background:var(--bg3)"><div class="cr-val">17.485</div></div></div><div class="cr-cac">CAC R$114</div></div>
+      <div class="chart-row"><div class="cr-month">Jun/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:86.7%;background:var(--yellow)"><div class="cr-val">39.576 — Excepcional</div></div></div><div class="cr-cac">CAC R$121</div></div>
+      <div class="chart-row"><div class="cr-month">Jul/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:20.1%;background:var(--accent)"><div class="cr-val">9.177</div></div></div><div class="cr-cac">CAC R$76</div></div>
+      <div class="chart-row"><div class="cr-month">Ago/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:36.0%;background:var(--accent)"><div class="cr-val">16.447</div></div></div><div class="cr-cac">CAC R$85</div></div>
+      <div class="chart-row"><div class="cr-month">Set/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:67.4%;background:var(--accent)"><div class="cr-val">30.790</div></div></div><div class="cr-cac">CAC R$91</div></div>
+      <div class="chart-row"><div class="cr-month">Out/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:93.6%;background:var(--green)"><div class="cr-val">42.713 — MELHOR CAC</div></div></div><div class="cr-cac" style="color:var(--green);font-weight:800;">CAC R$75</div></div>
+      <div class="chart-row"><div class="cr-month">Nov/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:100%;background:var(--yellow)"><div class="cr-val">45.644 — RECORDE</div></div></div><div class="cr-cac">CAC R$125</div></div>
+      <div class="chart-row"><div class="cr-month">Dez/25</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:62.1%;background:var(--bg3)"><div class="cr-val">28.330</div></div></div><div class="cr-cac">CAC R$109</div></div>
+      <div class="chart-row"><div class="cr-month">Jan/26</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:46.6%;background:var(--bg3)"><div class="cr-val">21.283</div></div></div><div class="cr-cac">CAC R$136</div></div>
+      <div class="chart-row"><div class="cr-month">Fev/26</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:71.8%;background:var(--bg3)"><div class="cr-val">32.780</div></div></div><div class="cr-cac">CAC R$149</div></div>
+      <div class="chart-row"><div class="cr-month">Mar/26</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:71.5%;background:var(--bg3)"><div class="cr-val">32.622</div></div></div><div class="cr-cac">CAC R$129</div></div>
+      <div class="chart-row"><div class="cr-month">Abr/26</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:49.8%;background:var(--accent)"><div class="cr-val">22.738</div></div></div><div class="cr-cac">CAC R$98</div></div>
+      <div class="chart-row"><div class="cr-month">Mai/26</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:47.4%;background:var(--red)"><div class="cr-val">21.625 — PIOR eficiência</div></div></div><div class="cr-cac" style="color:var(--red);font-weight:800;">CAC R$199</div></div>
+      <div class="chart-row"><div class="cr-month">Jun/26*</div><div class="cr-bar-wrap"><div class="cr-bar" style="width:31.7%;background:rgba(148,163,184,0.3);border:1px dashed var(--border)"><div class="cr-val" style="color:var(--text2)">~14.500</div></div></div><div class="cr-cac" style="color:var(--text2)">CAC ~R$128</div></div>
+    </div>
+
+    <div class="info-box" style="margin-top:32px;">
+      <strong>Padrão observado:</strong> Novembro gera volume excepcional (sempre acima de 30K TCs) independente do budget, graças à Data Dupla 11/11 + Encendido + Pré-Black Friday. Meses com inicio tardio ou budget 2× sem aumento de base elegivel resultam em CAC alto sem proporcional ganho de volume — como comprovado em Mai/26.
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /tab-historico -->
+
+
+<!-- ===================== ABA SIMULADOR v2 ===================== -->
+<div id="tab-simulador" class="tab-content">
+
+  <!-- HERO -->
+  <div class="sim-hero">
+    <div class="container">
+      <div class="hero-badge">Calculadora Granular por NISE</div>
+      <h1>&#129518; Simulador de <span>Campanha</span></h1>
+      <p>Configure cupom e dias por segmento (A e B separados). Resultados em tempo real com dados BQ validados. Fator sazonal aplicado automaticamente pelo mês.</p>
+    </div>
+  </div>
+
+  <!-- CONTROLES GLOBAIS -->
+  <div class="sim-global">
+    <div class="sim-global-inner">
+      <!-- Base elegível -->
+      <div class="global-base-group">
+        <div class="sim-global-title">Base Elegível Total</div>
+        <div class="input-label" style="margin-bottom:8px;">
+          <span style="font-size:13px;color:var(--text2);">Ajuste a base</span>
+          <span class="input-val" id="val-base-global">9,5M</span>
+        </div>
+        <input type="range" id="slider-base-global" min="5" max="20" step="0.5" value="9.5"
+               oninput="onBaseChange(this.value)">
+        <div class="range-labels"><span>5M</span><span>20M</span></div>
+      </div>
+
+      <!-- Mês -->
+      <div class="global-mes-group">
+        <div class="sim-global-title">Mês da Campanha</div>
+        <select id="sel-mes-global" onchange="onMesChange()" style="width:160px;">
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6" selected>Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro &#11088;</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <span id="saz-badge-global" class="saz-badge saz-gray" style="margin-top:6px;display:inline-block;">&#xD7;1.00</span>
+      </div>
+
+      <!-- Info -->
+      <div style="font-size:12px;color:var(--text2);max-width:320px;padding-bottom:4px;">
+        <strong style="color:var(--accent);">Modelo:</strong> TCs = base_seg &times; lift_pp/100 &times; (dias/30) &times; fator_sazonal<br>
+        <strong style="color:var(--accent);">CAC:</strong> dado hist&oacute;rico BQ por segmento+cupom
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCOS DE NISE -->
+  <div class="sim-blocks">
+
+    <!-- === SILVER === -->
+    <div class="nise-block nise-silver" id="block-silver">
+      <div class="nise-header">
+        <div class="nise-name">&#127807; SILVER</div>
+        <div class="nise-base-info">
+          A: <strong id="base-silver-a">—</strong> &nbsp;|&nbsp; B: <strong id="base-silver-b">—</strong>
+          &nbsp;&nbsp;<span style="font-size:11px;color:var(--text2);">(17,6% + 21,5% da base total)</span>
+        </div>
+        <div class="toggle-pill" id="toggle-silver">
+          <button class="active" onclick="setToggle('silver','together',this)">A+B juntos</button>
+          <button onclick="setToggle('silver','split',this)">Separar A e B</button>
+        </div>
+      </div>
+      <div class="nise-body">
+        <!-- Modo together -->
+        <div id="rows-silver-together">
+          <div class="seg-row" id="row-silver-ab">
+            <div class="seg-label seg-silver">A+B</div>
+
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-silver-ab" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-silver-ab">20</span></label>
+              <input type="range" class="slider-silver" min="5" max="30" step="1" value="20"
+                     id="dias-silver-ab" oninput="updateSliderFill(this); document.getElementById('vlabel-silver-ab').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+
+            <div class="seg-out">
+              <div class="so-label">TCs</div>
+              <div class="so-val" id="tcs-silver-ab" style="color:#22c55e;">—</div>
+            </div>
+            <div class="seg-out">
+              <div class="so-label">Custo</div>
+              <div class="so-val" id="custo-silver-ab">—</div>
+            </div>
+            <div class="seg-out">
+              <div class="so-label">CAC</div>
+              <div class="so-val" id="cac-silver-ab">—</div>
+            </div>
+            <div class="seg-out">
+              <div class="so-label">Lift</div>
+              <div class="so-val" id="lift-silver-ab">—</div>
+              <div class="so-warn" id="warn-silver-ab"></div>
+            </div>
+
+            <div class="seg-alert seg-alert-yellow" id="alert-silver-ab">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+
+        <!-- Modo split -->
+        <div id="rows-silver-split" style="display:none;">
+          <!-- Silver A -->
+          <div class="seg-row" id="row-silver-a">
+            <div class="seg-label seg-silver">A</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-silver-a" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-silver-a">20</span></label>
+              <input type="range" class="slider-silver" min="5" max="30" step="1" value="20"
+                     id="dias-silver-a" oninput="updateSliderFill(this); document.getElementById('vlabel-silver-a').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-silver-a" style="color:#22c55e;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-silver-a">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-silver-a">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-silver-a">—</div><div class="so-warn" id="warn-silver-a"></div></div>
+            <div class="seg-alert seg-alert-yellow" id="alert-silver-a">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+          <!-- Silver B -->
+          <div class="seg-row" id="row-silver-b">
+            <div class="seg-label seg-silver">B</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-silver-b" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-silver-b">20</span></label>
+              <input type="range" class="slider-silver" min="5" max="30" step="1" value="20"
+                     id="dias-silver-b" oninput="updateSliderFill(this); document.getElementById('vlabel-silver-b').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-silver-b" style="color:#22c55e;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-silver-b">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-silver-b">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-silver-b">—</div><div class="so-warn" id="warn-silver-b"></div></div>
+            <div class="seg-alert seg-alert-yellow" id="alert-silver-b">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === GOLD === -->
+    <div class="nise-block nise-gold" id="block-gold">
+      <div class="nise-header">
+        <div class="nise-name">&#127864; GOLD</div>
+        <div class="nise-base-info">
+          A: <strong id="base-gold-a">—</strong> &nbsp;|&nbsp; B: <strong id="base-gold-b">—</strong>
+          &nbsp;&nbsp;<span style="font-size:11px;color:var(--text2);">(21,8% + 20,1% da base total)</span>
+        </div>
+        <div class="toggle-pill" id="toggle-gold">
+          <button class="active" onclick="setToggle('gold','together',this)">A+B juntos</button>
+          <button onclick="setToggle('gold','split',this)">Separar A e B</button>
+        </div>
+      </div>
+      <div class="nise-body">
+        <!-- Modo together -->
+        <div id="rows-gold-together">
+          <div class="seg-row">
+            <div class="seg-label seg-gold">A+B</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-gold-ab" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-gold-ab">20</span></label>
+              <input type="range" class="slider-gold" min="5" max="30" step="1" value="20"
+                     id="dias-gold-ab" oninput="updateSliderFill(this); document.getElementById('vlabel-gold-ab').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-gold-ab" style="color:#fbbf24;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-gold-ab">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-gold-ab">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-gold-ab">—</div><div class="so-warn" id="warn-gold-ab"></div></div>
+            <div class="seg-alert seg-alert-orange" id="alert-gold-ab-inefficient" style="display:none;">&#9888; CAC R$580 — muito ineficiente (Gold B com R$35)</div>
+            <div class="seg-alert seg-alert-yellow" id="alert-gold-ab">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+        <!-- Modo split -->
+        <div id="rows-gold-split" style="display:none;">
+          <!-- Gold A -->
+          <div class="seg-row">
+            <div class="seg-label seg-gold">A</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-gold-a" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-gold-a">20</span></label>
+              <input type="range" class="slider-gold" min="5" max="30" step="1" value="20"
+                     id="dias-gold-a" oninput="updateSliderFill(this); document.getElementById('vlabel-gold-a').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-gold-a" style="color:#fbbf24;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-gold-a">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-gold-a">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-gold-a">—</div><div class="so-warn" id="warn-gold-a"></div></div>
+            <div class="seg-alert seg-alert-yellow" id="alert-gold-a">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+          <!-- Gold B -->
+          <div class="seg-row">
+            <div class="seg-label seg-gold">B</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-gold-b" onchange="calcAll()">
+                <option value="20">R$ 20</option>
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-gold-b">20</span></label>
+              <input type="range" class="slider-gold" min="5" max="30" step="1" value="20"
+                     id="dias-gold-b" oninput="updateSliderFill(this); document.getElementById('vlabel-gold-b').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-gold-b" style="color:#fbbf24;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-gold-b">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-gold-b">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-gold-b">—</div><div class="so-warn" id="warn-gold-b"></div></div>
+            <div class="seg-alert seg-alert-orange" id="alert-gold-b-inefficient" style="display:none;">&#9888; CAC R$580 — muito ineficiente (Gold B com R$35)</div>
+            <div class="seg-alert seg-alert-yellow" id="alert-gold-b">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === PLATINUM === -->
+    <div class="nise-block nise-plat" id="block-plat">
+      <div class="nise-header">
+        <div class="nise-name">&#128142; PLATINUM</div>
+        <div class="nise-base-info">
+          A: <strong id="base-plat-a">—</strong> &nbsp;|&nbsp; B: <strong id="base-plat-b">—</strong>
+          &nbsp;&nbsp;<span style="font-size:11px;color:var(--text2);">(11,9% + 7,1% da base total)</span>
+        </div>
+        <div class="toggle-pill" id="toggle-plat">
+          <button class="active" onclick="setToggle('plat','together',this)">A+B juntos</button>
+          <button onclick="setToggle('plat','split',this)">Separar A e B</button>
+        </div>
+      </div>
+      <div class="nise-body">
+        <!-- Modo together -->
+        <div id="rows-plat-together">
+          <div class="seg-row">
+            <div class="seg-label seg-plat">A+B</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-plat-ab" onchange="calcAll()">
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-plat-ab">20</span></label>
+              <input type="range" class="slider-plat" min="5" max="30" step="1" value="20"
+                     id="dias-plat-ab" oninput="updateSliderFill(this); document.getElementById('vlabel-plat-ab').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-plat-ab" style="color:#3b82f6;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-plat-ab">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-plat-ab">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-plat-ab">—</div><div class="so-warn" id="warn-plat-ab"></div></div>
+            <div class="seg-alert seg-alert-red" id="alert-plat-ab-neg" style="display:none;">&#128308; LIFT NEGATIVO — Platinum B com R$35, n&atilde;o usar</div>
+            <div class="seg-alert seg-alert-yellow" id="alert-plat-ab">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+        <!-- Modo split -->
+        <div id="rows-plat-split" style="display:none;">
+          <!-- Platinum A -->
+          <div class="seg-row">
+            <div class="seg-label seg-plat">A</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-plat-a" onchange="calcAll()">
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-plat-a">20</span></label>
+              <input type="range" class="slider-plat" min="5" max="30" step="1" value="20"
+                     id="dias-plat-a" oninput="updateSliderFill(this); document.getElementById('vlabel-plat-a').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-plat-a" style="color:#3b82f6;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-plat-a">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-plat-a">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-plat-a">—</div><div class="so-warn" id="warn-plat-a"></div></div>
+            <div class="seg-alert seg-alert-yellow" id="alert-plat-a">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+          <!-- Platinum B -->
+          <div class="seg-row">
+            <div class="seg-label seg-plat">B</div>
+            <div class="seg-ctrl">
+              <label>Cupom</label>
+              <select class="sel-cupom" id="cupom-plat-b" onchange="calcAll()">
+                <option value="35">R$ 35</option>
+                <option value="50" selected>R$ 50</option>
+                <option value="70">R$ 70 &#9888;</option>
+                <option value="100">R$ 100 &#9888;&#9888;</option>
+                <option value="120">R$ 120 &#9888;&#9888;</option>
+                <option value="150">R$ 150 &#9888;&#9888;</option>
+              </select>
+            </div>
+            <div class="seg-ctrl">
+              <label>Dias: <span id="vlabel-plat-b">20</span></label>
+              <input type="range" class="slider-plat" min="5" max="30" step="1" value="20"
+                     id="dias-plat-b" oninput="updateSliderFill(this); document.getElementById('vlabel-plat-b').textContent=this.value; calcAll()">
+              <div class="range-labels" style="font-size:10px;"><span>5</span><span>30</span></div>
+            </div>
+            <div class="seg-out"><div class="so-label">TCs</div><div class="so-val" id="tcs-plat-b" style="color:#3b82f6;">—</div></div>
+            <div class="seg-out"><div class="so-label">Custo</div><div class="so-val" id="custo-plat-b">—</div></div>
+            <div class="seg-out"><div class="so-label">CAC</div><div class="so-val" id="cac-plat-b">—</div></div>
+            <div class="seg-out"><div class="so-label">Lift</div><div class="so-val" id="lift-plat-b">—</div><div class="so-warn" id="warn-plat-b"></div></div>
+            <div class="seg-alert seg-alert-red" id="alert-plat-b-neg" style="display:none;">&#128308; LIFT NEGATIVO — n&atilde;o usar Platinum B com R$35</div>
+            <div class="seg-alert seg-alert-yellow" id="alert-plat-b">&#9888; Acima do hist&oacute;rico testado (R$70)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sim-blocks -->
+
+  <!-- PAINEL TOTAL STICKY -->
+  <div class="sim-total" id="sim-total-panel">
+    <div class="sim-total-inner">
+      <div class="total-item">
+        <div class="total-label">TCs Incrementais</div>
+        <div class="total-val" id="total-tcs" style="color:#38bdf8;">—</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-item">
+        <div class="total-label">Custo Total</div>
+        <div class="total-val" id="total-custo">—</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-item">
+        <div class="total-label">CAC M&eacute;dio</div>
+        <div class="total-val" id="total-cac">—</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-item">
+        <div class="total-label">Fator Sazonal</div>
+        <div class="total-val" id="total-saz" style="font-size:16px;">&#xD7;1.00</div>
+      </div>
+      <span id="total-mes-badge" class="total-mes-badge">Junho</span>
+      <span id="total-conf-badge" class="total-conf-badge" style="background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);">&#9989; Dados testados</span>
+    </div>
+  </div>
+
+</div><!-- /tab-simulador -->
+
+</div><!-- /main -->
+
+<footer>
+  <div class="footer-title">Eldorado — Playbook Histórico</div>
+  <p>Registro institucional do programa de incentivo ao TC Mercado Pago.</p>
+  <p style="margin-top:8px;">Criado para onboarding de novos membros e consulta da liderança.</p>
+  <div class="footer-meta">Ultima atualizacao: 18 Jun 2026 &nbsp;|&nbsp; Mercado Pago Analytics</div>
+</footer>
+
+<script>
+// ============================================================
+//  DADOS BQ VALIDADOS
+// ============================================================
+
+// Lift PP por segmento+cupom (dado histórico)
+const LIFT_DATA = {
+  'Silver A':   { 20: 0.20,  35: 0.385, 50: 0.625, 70: 0.523 },
+  'Silver B':   { 20: 0.10,  35: 0.175, 50: 0.299, 70: 0.062 },
+  'Gold A':     { 20: 0.15,  35: 0.239, 50: 0.304, 70: 0.409 },
+  'Gold B':     { 20: 0.05,  35: 0.062, 50: 0.201, 70: 0.199 },
+  'Platinum A': {            35: 0.180, 50: 0.219, 70: 0.292 },
+  'Platinum B': {            35: -0.10, 50: 0.120, 70: 0.129 },
+};
+
+// CAC histórico BQ por segmento+cupom
+const CAC_DATA = {
+  'Silver A':   { 35: 135, 50: 93,  70: 135 },
+  'Silver B':   { 35: 178, 50: 114, 70: 2141 },
+  'Gold A':     { 35: 125, 50: 97,  70: 124 },
+  'Gold B':     { 35: 580, 50: 128, 70: 175 },
+  'Platinum A': { 35: 365, 50: 86,  70: 125 },
+  'Platinum B': { 35: -1,  50: 110, 70: 202 },
+};
+
+// Shares históricos (% da base total)
+const SHARES = {
+  'Silver A':   0.176,
+  'Silver B':   0.215,
+  'Gold A':     0.218,
+  'Gold B':     0.201,
+  'Platinum A': 0.119,
+  'Platinum B': 0.071,
+};
+
+// Fatores sazonais por mês (1=Jan ... 12=Dez)
+const SAZONAL = {
+  1:0.70, 2:0.67, 3:0.72, 4:0.89, 5:0.90, 6:1.00,
+  7:1.00, 8:1.00, 9:1.00, 10:1.28, 11:1.51, 12:1.02
+};
+
+const MESES_NOME = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+// Estado dos toggles
+const toggleState = { silver: 'together', gold: 'together', plat: 'together' };
+
+// ============================================================
+//  FUNÇÕES DE CÁLCULO
+// ============================================================
+
+function getLiftPP(seg, cupom) {
+  const data = LIFT_DATA[seg];
+  if (!data) return 0.25;
+  const pts = Object.keys(data).map(Number).filter(k => data[k] !== null && !isNaN(data[k])).sort((a,b)=>a-b);
+  if (pts.length === 0) return 0.20;
+
+  // Ponto exato
+  if (data[cupom] !== undefined) return data[cupom];
+
+  // Interpolação entre pontos testados
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (cupom > pts[i] && cupom < pts[i+1]) {
+      const t = (cupom - pts[i]) / (pts[i+1] - pts[i]);
+      return data[pts[i]] + t * (data[pts[i+1]] - data[pts[i]]);
+    }
+  }
+
+  // Extrapolação abaixo do mínimo
+  if (cupom < pts[0]) {
+    if (pts.length >= 2) {
+      const slope = (data[pts[1]] - data[pts[0]]) / (pts[1] - pts[0]);
+      return Math.max(0, data[pts[0]] + slope * (cupom - pts[0]));
+    }
+    return data[pts[0]] * (cupom / pts[0]);
+  }
+
+  // Extrapolação acima de R$70 com diminishing returns ×0.85 por R$30
+  const maxPt  = pts[pts.length - 1];
+  const prevPt = pts[pts.length - 2] !== undefined ? pts[pts.length - 2] : maxPt - 15;
+  const prev   = data[prevPt] !== undefined ? data[prevPt] : data[maxPt] * 0.9;
+  const baseSlope = (data[maxPt] - prev) / (maxPt - prevPt);
+  const excess = cupom - maxPt;
+  const thirtySteps = Math.floor(excess / 30);
+  const rem = excess % 30;
+  const drFactor = Math.pow(0.85, thirtySteps) * (1 - 0.15 * (rem / 30));
+  return Math.max(0, data[maxPt] + baseSlope * excess * drFactor);
+}
+
+function getCACEstimado(seg, cupom) {
+  const data = CAC_DATA[seg];
+  if (!data) return null;
+  const pts = Object.keys(data).map(Number).sort((a,b)=>a-b);
+
+  if (data[cupom] !== undefined) return data[cupom];
+
+  // Interpolação
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (cupom > pts[i] && cupom < pts[i+1]) {
+      const t = (cupom - pts[i]) / (pts[i+1] - pts[i]);
+      return Math.round(data[pts[i]] + t * (data[pts[i+1]] - data[pts[i]]));
+    }
+  }
+
+  // Extrapolação acima de R$70 — CAC cresce com diminishing returns inverso
+  if (cupom > pts[pts.length-1]) {
+    const maxPt = pts[pts.length-1];
+    const prevPt = pts[pts.length-2] !== undefined ? pts[pts.length-2] : maxPt - 15;
+    const prev = data[prevPt] !== undefined ? data[prevPt] : data[maxPt];
+    const slope = (data[maxPt] - prev) / (maxPt - prevPt);
+    const excess = cupom - maxPt;
+    // CAC também cresce mas com amplification factor 1.2 por R$30 acima
+    const steps = excess / 30;
+    return Math.round(data[maxPt] + slope * excess * Math.pow(1.2, steps));
+  }
+
+  return data[pts[0]];
+}
+
+function calcSegmento(seg, cupom, dias, baseTotalM, fatorSaz) {
+  const baseSeg = baseTotalM * 1e6 * SHARES[seg];
+  const lift_pp = getLiftPP(seg, cupom);
+  const isExtrap = cupom > 70;
+  const isNegLift = lift_pp < 0;
+
+  // TCs = base_seg × lift_pp/100 × (dias/30) × fator_sazonal
+  // lift_pp na fórmula está em unidade fracionária (0.20 = 20pp)
+  // interpretamos como percentual puro: lift_pp = 0.385 significa 38.5pp
+  const tcs_raw = baseSeg * (Math.max(0, lift_pp) / 100) * (dias / 30) * fatorSaz;
+  const tcs = Math.round(tcs_raw);
+
+  const cac_hist = getCACEstimado(seg, cupom);
+  const custo = (cac_hist !== null && cac_hist > 0 && tcs > 0) ? tcs * cac_hist : 0;
+  const cac_efet = tcs > 0 && custo > 0 ? Math.round(custo / tcs) : (cac_hist || 0);
+
+  return { tcs, custo, cac: cac_efet, lift_pp, isExtrap, isNegLift };
+}
+
+// Calcular dois segmentos juntos (A+B): média ponderada de lift e CAC
+function calcAB(niseName, cupom, dias, baseTotalM, fatorSaz) {
+  const segA = niseName + ' A';
+  const segB = niseName + ' B';
+  const rA = calcSegmento(segA, cupom, dias, baseTotalM, fatorSaz);
+  const rB = calcSegmento(segB, cupom, dias, baseTotalM, fatorSaz);
+  const tcs = rA.tcs + rB.tcs;
+  const custo = rA.custo + rB.custo;
+  const cac = tcs > 0 ? Math.round(custo / tcs) : 0;
+  const lift_pp_avg = (rA.lift_pp + rB.lift_pp) / 2;
+  return {
+    tcs, custo, cac,
+    lift_pp: lift_pp_avg,
+    isExtrap: rA.isExtrap,
+    isNegLift: rA.isNegLift || rB.isNegLift
+  };
+}
+
+// ============================================================
+//  FORMATAÇÃO
+// ============================================================
+
+function fmtNum(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(2).replace('.',',') + 'M';
+  if (n >= 1e3) return n.toLocaleString('pt-BR');
+  return String(n);
+}
+
+function fmtBRL(n) {
+  if (n >= 1e6) return 'R$' + (n/1e6).toFixed(2).replace('.',',') + 'M';
+  return 'R$' + Math.round(n).toLocaleString('pt-BR');
+}
+
+function cacColor(cac) {
+  if (cac <= 0) return '#94a3b8';
+  if (cac < 130) return '#34d399';
+  if (cac < 200) return '#fbbf24';
+  return '#f87171';
+}
+
+// ============================================================
+//  ATUALIZAÇÃO DE UM SEGMENTO NA UI
+// ============================================================
+
+function updateSegUI(idSuffix, result) {
+  const $ = id => document.getElementById(id);
+
+  const tcsEl   = $('tcs-'   + idSuffix);
+  const custoEl = $('custo-' + idSuffix);
+  const cacEl   = $('cac-'   + idSuffix);
+  const liftEl  = $('lift-'  + idSuffix);
+  const warnEl  = $('warn-'  + idSuffix);
+
+  if (!tcsEl) return;
+
+  tcsEl.textContent   = fmtNum(result.tcs);
+  custoEl.textContent = fmtBRL(result.custo);
+  cacEl.textContent   = result.cac > 0 ? fmtBRL(result.cac) : '—';
+  cacEl.style.color   = cacColor(result.cac);
+  liftEl.textContent  = result.isNegLift ? 'NEGATIVO' : (result.lift_pp * 100).toFixed(1) + 'pp';
+  liftEl.style.color  = result.isNegLift ? '#f87171' : (result.isExtrap ? '#fbbf24' : '#94a3b8');
+  warnEl.textContent  = result.isExtrap ? '⚠ extrapol.' : '';
+}
+
+function showAlert(id, show) {
+  const el = document.getElementById(id);
+  if (el) {
+    if (show) { el.classList.add('show'); }
+    else { el.classList.remove('show'); }
+  }
+}
+
+// ============================================================
+//  CÁLCULO GERAL
+// ============================================================
+
+
+function updateSliderFill(sl) {
+  var min = parseFloat(sl.min) || 0;
+  var max = parseFloat(sl.max) || 30;
+  var val = parseFloat(sl.value) || 0;
+  var pct = Math.round((val - min) / (max - min) * 100);
+  var color = sl.classList.contains('slider-gold') ? '#fbbf24' :
+              sl.classList.contains('slider-plat') ? '#3b82f6' : '#22c55e';
+  sl.style.background = 'linear-gradient(to right, ' + color + ' 0%, ' + color + ' ' + pct + '%, #334155 ' + pct + '%, #334155 100%)';
+}
+function calcAll() {
+  const baseTotalM = parseFloat(document.getElementById('slider-base-global').value);
+  const mes = parseInt(document.getElementById('sel-mes-global').value);
+  const fatorSaz = SAZONAL[mes] || 1.0;
+
+  // Atualizar exibição de bases por segmento
+  function fmtBase(seg) {
+    const b = baseTotalM * 1e6 * SHARES[seg];
+    return fmtNum(Math.round(b));
+  }
+  document.getElementById('base-silver-a').textContent = fmtBase('Silver A');
+  document.getElementById('base-silver-b').textContent = fmtBase('Silver B');
+  document.getElementById('base-gold-a').textContent   = fmtBase('Gold A');
+  document.getElementById('base-gold-b').textContent   = fmtBase('Gold B');
+  document.getElementById('base-plat-a').textContent   = fmtBase('Platinum A');
+  document.getElementById('base-plat-b').textContent   = fmtBase('Platinum B');
+
+  let totalTcs = 0, totalCusto = 0;
+  let hasExtrap = false, hasHighExtrap = false;
+
+  // Helper para ler select e slider
+  function readInputs(idCupom, idDias) {
+    return {
+      cupom: parseInt(document.getElementById(idCupom).value),
+      dias:  parseInt(document.getElementById(idDias).value),
+    };
+  }
+
+  // ---- SILVER ----
+  if (toggleState.silver === 'together') {
+    const { cupom, dias } = readInputs('cupom-silver-ab', 'dias-silver-ab');
+    const r = calcAB('Silver', cupom, dias, baseTotalM, fatorSaz);
+    updateSegUI('silver-ab', r);
+    showAlert('alert-silver-ab', cupom > 70);
+    totalTcs += r.tcs; totalCusto += r.custo;
+    if (cupom > 70) hasExtrap = true;
+    if (cupom > 100) hasHighExtrap = true;
+  } else {
+    const { cupom: cupomA, dias: diasA } = readInputs('cupom-silver-a', 'dias-silver-a');
+    const { cupom: cupomB, dias: diasB } = readInputs('cupom-silver-b', 'dias-silver-b');
+    const rA = calcSegmento('Silver A', cupomA, diasA, baseTotalM, fatorSaz);
+    const rB = calcSegmento('Silver B', cupomB, diasB, baseTotalM, fatorSaz);
+    updateSegUI('silver-a', rA);
+    updateSegUI('silver-b', rB);
+    showAlert('alert-silver-a', cupomA > 70);
+    showAlert('alert-silver-b', cupomB > 70);
+    totalTcs += rA.tcs + rB.tcs; totalCusto += rA.custo + rB.custo;
+    if (cupomA > 70 || cupomB > 70) hasExtrap = true;
+    if (cupomA > 100 || cupomB > 100) hasHighExtrap = true;
+  }
+
+  // ---- GOLD ----
+  if (toggleState.gold === 'together') {
+    const { cupom, dias } = readInputs('cupom-gold-ab', 'dias-gold-ab');
+    const r = calcAB('Gold', cupom, dias, baseTotalM, fatorSaz);
+    updateSegUI('gold-ab', r);
+    showAlert('alert-gold-ab', cupom > 70);
+    // Gold B R$35 warning — applies in AB mode too
+    const isGoldB35 = (cupom === 35);
+    const alertIneff = document.getElementById('alert-gold-ab-inefficient');
+    if (alertIneff) {
+      if (isGoldB35) { alertIneff.style.display='block'; alertIneff.classList.add('show'); }
+      else { alertIneff.style.display='none'; alertIneff.classList.remove('show'); }
+    }
+    totalTcs += r.tcs; totalCusto += r.custo;
+    if (cupom > 70) hasExtrap = true;
+    if (cupom > 100) hasHighExtrap = true;
+  } else {
+    const { cupom: cupomA, dias: diasA } = readInputs('cupom-gold-a', 'dias-gold-a');
+    const { cupom: cupomB, dias: diasB } = readInputs('cupom-gold-b', 'dias-gold-b');
+    const rA = calcSegmento('Gold A', cupomA, diasA, baseTotalM, fatorSaz);
+    const rB = calcSegmento('Gold B', cupomB, diasB, baseTotalM, fatorSaz);
+    updateSegUI('gold-a', rA);
+    updateSegUI('gold-b', rB);
+    showAlert('alert-gold-a', cupomA > 70);
+    showAlert('alert-gold-b', cupomB > 70);
+    // Gold B R$35 ineficiente
+    const ineff = document.getElementById('alert-gold-b-inefficient');
+    if (ineff) {
+      if (cupomB === 35) { ineff.style.display='block'; ineff.classList.add('show'); }
+      else { ineff.style.display='none'; ineff.classList.remove('show'); }
+    }
+    totalTcs += rA.tcs + rB.tcs; totalCusto += rA.custo + rB.custo;
+    if (cupomA > 70 || cupomB > 70) hasExtrap = true;
+    if (cupomA > 100 || cupomB > 100) hasHighExtrap = true;
+  }
+
+  // ---- PLATINUM ----
+  if (toggleState.plat === 'together') {
+    const { cupom, dias } = readInputs('cupom-plat-ab', 'dias-plat-ab');
+    const r = calcAB('Platinum', cupom, dias, baseTotalM, fatorSaz);
+    updateSegUI('plat-ab', r);
+    showAlert('alert-plat-ab', cupom > 70);
+    // Platinum B R$35 negative lift warning in AB mode
+    const negAlert = document.getElementById('alert-plat-ab-neg');
+    if (negAlert) {
+      if (cupom === 35) { negAlert.style.display='block'; negAlert.classList.add('show'); }
+      else { negAlert.style.display='none'; negAlert.classList.remove('show'); }
+    }
+    totalTcs += r.tcs; totalCusto += r.custo;
+    if (cupom > 70) hasExtrap = true;
+    if (cupom > 100) hasHighExtrap = true;
+  } else {
+    const { cupom: cupomA, dias: diasA } = readInputs('cupom-plat-a', 'dias-plat-a');
+    const { cupom: cupomB, dias: diasB } = readInputs('cupom-plat-b', 'dias-plat-b');
+    const rA = calcSegmento('Platinum A', cupomA, diasA, baseTotalM, fatorSaz);
+    const rB = calcSegmento('Platinum B', cupomB, diasB, baseTotalM, fatorSaz);
+    updateSegUI('plat-a', rA);
+    updateSegUI('plat-b', rB);
+    showAlert('alert-plat-a', cupomA > 70);
+    showAlert('alert-plat-b', cupomB > 70);
+    // Platinum B negative lift
+    const negAlertB = document.getElementById('alert-plat-b-neg');
+    if (negAlertB) {
+      if (cupomB === 35) { negAlertB.style.display='block'; negAlertB.classList.add('show'); }
+      else { negAlertB.style.display='none'; negAlertB.classList.remove('show'); }
+    }
+    totalTcs += rA.tcs + rB.tcs; totalCusto += rA.custo + rB.custo;
+    if (cupomA > 70 || cupomB > 70) hasExtrap = true;
+    if (cupomA > 100 || cupomB > 100) hasHighExtrap = true;
+  }
+
+  // ---- PAINEL TOTAL ----
+  const cacMedio = totalTcs > 0 ? Math.round(totalCusto / totalTcs) : 0;
+
+  document.getElementById('total-tcs').textContent   = fmtNum(totalTcs);
+  document.getElementById('total-custo').textContent = fmtBRL(totalCusto);
+  document.getElementById('total-cac').textContent   = cacMedio > 0 ? fmtBRL(cacMedio) : '—';
+  document.getElementById('total-cac').style.color   = cacColor(cacMedio);
+
+  const sazStr = fatorSaz.toFixed(2).replace('.',',');
+  document.getElementById('total-saz').textContent   = '×' + sazStr;
+  document.getElementById('total-mes-badge').textContent = MESES_NOME[mes];
+
+  const confBadge = document.getElementById('total-conf-badge');
+  if (hasHighExtrap) {
+    confBadge.style.background = 'rgba(248,113,113,0.15)';
+    confBadge.style.color = '#f87171';
+    confBadge.style.border = '1px solid rgba(248,113,113,0.3)';
+    confBadge.textContent = '⚠️ Extrapolação alta (>R$100)';
+  } else if (hasExtrap) {
+    confBadge.style.background = 'rgba(251,191,36,0.15)';
+    confBadge.style.color = '#fbbf24';
+    confBadge.style.border = '1px solid rgba(251,191,36,0.3)';
+    confBadge.textContent = '⚠️ Acima do testado (>R$70)';
+  } else {
+    confBadge.style.background = 'rgba(52,211,153,0.15)';
+    confBadge.style.color = '#34d399';
+    confBadge.style.border = '1px solid rgba(52,211,153,0.3)';
+    confBadge.textContent = '✅ Dados testados';
+  }
+}
+
+// ============================================================
+//  CONTROLES GLOBAIS
+// ============================================================
+
+function onBaseChange(v) {
+  const num = parseFloat(v);
+  document.getElementById('val-base-global').textContent = num.toFixed(1).replace('.', ',') + 'M';
+  calcAll();
+}
+
+function onMesChange() {
+  const mes = parseInt(document.getElementById('sel-mes-global').value);
+  const fator = SAZONAL[mes] || 1.0;
+  // Update max days for selected month
+  const diasMes = [31,28,31,30,31,30,31,31,30,31,30,31][mes-1];
+  document.querySelectorAll('input[type=range][id^="dias-"]').forEach(function(sl) {
+    const oldMax = parseInt(sl.max);
+    sl.max = diasMes;
+    // If current value was at max (full month), update to new max
+    if (parseInt(sl.value) >= oldMax) sl.value = diasMes;
+    sl.dispatchEvent(new Event('input'));
+  });
+  const badge = document.getElementById('saz-badge-global');
+  badge.textContent = '×' + fator.toFixed(2);
+
+  // Cor do badge
+  badge.className = 'saz-badge';
+  if (mes >= 1 && mes <= 3) badge.classList.add('saz-red');
+  else if (mes === 10) badge.classList.add('saz-orange');
+  else if (mes === 11) badge.classList.add('saz-green');
+  else badge.classList.add('saz-gray');
+
+  calcAll();
+}
+
+// ============================================================
+//  TOGGLE A+B / SEPARAR
+// ============================================================
+
+function setToggle(nise, mode, btnEl) {
+  toggleState[nise] = mode;
+
+  // Atualiza botões pill
+  const pill = document.getElementById('toggle-' + nise);
+  pill.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btnEl.classList.add('active');
+
+  // Mostra/oculta rows
+  document.getElementById('rows-' + nise + '-together').style.display = (mode === 'together') ? '' : 'none';
+  document.getElementById('rows-' + nise + '-split').style.display    = (mode === 'split')    ? '' : 'none';
+
+  calcAll();
+}
+
+// ============================================================
+//  TAB SWITCHER
+// ============================================================
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const navLinks = document.querySelector('.nav-hist-only');
+  if (navLinks) navLinks.style.display = (name === 'historico') ? '' : 'none';
+
+  // Mostra/oculta painel sticky
+  const panel = document.getElementById('sim-total-panel');
+  // handled by CSS fixed positioning — always visible when on simulator tab
+}
+
+// ============================================================
+//  INICIALIZAÇÃO
+// ============================================================
+
+window.addEventListener('load', function() {
+  onMesChange(); // seta badge sazonal
+  onBaseChange(9.5);
+  calcAll();
+});
+</script>
+
+</body>
+</html>

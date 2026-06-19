@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eldorado — Programa de Incentivo TC | Mercado Pago</title>
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy-mid: #1e293b;
+    --navy-light: #334155;
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+    --teal: #14b8a6;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --green: #22c55e;
+    --white: #f8fafc;
+    --gray: #94a3b8;
+    --gray-light: #e2e8f0;
+    --text: #1e293b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--navy-light);
+    z-index: 100;
+    padding: 0 2rem;
+  }
+  nav ul {
+    display: flex;
+    list-style: none;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav ul::-webkit-scrollbar { display: none; }
+  nav ul li a {
+    display: block;
+    padding: 1rem 0.85rem;
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  nav ul li a:hover { color: var(--blue-light); }
+
+  /* SECTIONS */
+  section {
+    padding: 5rem 2rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  section.light {
+    background: #f8fafc;
+    color: var(--text);
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  section.light .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 0.5rem;
+  }
+  .section-label.dark { color: var(--blue); }
+
+  h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.2; }
+  h2 { font-size: 1.9rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; }
+  h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+  .subtitle {
+    color: var(--gray);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+    max-width: 680px;
+  }
+
+  /* HERO */
+  #hero {
+    padding-top: 7rem;
+    padding-bottom: 3rem;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--blue-light);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.04em;
+  }
+  .hero-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .flow-step {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    min-width: 140px;
+    text-align: center;
+    flex: 1;
+  }
+  .flow-step .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .flow-step .label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .flow-step .desc {
+    font-size: 0.7rem;
+    color: var(--gray);
+    margin-top: 0.2rem;
+  }
+  .flow-arrow {
+    color: var(--blue);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .kpi-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue);
+  }
+  .kpi-card.teal::before { background: var(--teal); }
+  .kpi-card.amber::before { background: var(--amber); }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.red::before { background: var(--red); }
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .kpi-label {
+    font-size: 0.78rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+    font-weight: 500;
+  }
+  .kpi-sub {
+    font-size: 0.72rem;
+    color: var(--blue-light);
+    margin-top: 0.2rem;
+  }
+
+  /* INSIGHT CARDS */
+  .insights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .insight-card {
+    background: rgba(59, 130, 246, 0.07);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.3rem 1.4rem;
+  }
+  .insight-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--blue-light);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .insight-card p {
+    font-size: 0.88rem;
+    color: var(--gray);
+    line-height: 1.55;
+  }
+  .insight-card strong { color: var(--white); }
+
+  /* TABLES */
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--navy-light);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  thead {
+    background: var(--navy-light);
+  }
+  thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  tbody tr {
+    border-top: 1px solid rgba(51, 65, 85, 0.6);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(59, 130, 246, 0.05); }
+  tbody td {
+    padding: 0.7rem 1rem;
+    color: var(--white);
+  }
+  .light tbody td { color: var(--text); }
+  .light thead { background: #e2e8f0; }
+  .light thead th { color: #475569; }
+  .light tbody tr { border-top: 1px solid #e2e8f0; }
+  .light tbody tr:hover { background: #f1f5f9; }
+  .table-footer td {
+    background: var(--navy-light) !important;
+    font-weight: 700;
+    color: var(--blue-light) !important;
+  }
+
+  .tag-best {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  .tag-warn {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  .tag-bad {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  /* BAR CHARTS */
+  .bar-chart {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .bar-label {
+    width: 52px;
+    font-size: 0.78rem;
+    color: var(--gray);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    background: var(--navy-light);
+    border-radius: 4px;
+    height: 28px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    padding-left: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--white);
+    transition: width 0.6s ease;
+  }
+  .bar-fill.best { background: linear-gradient(90deg, #3b82f6, #14b8a6); }
+  .bar-fill.warn { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .bar-fill.special { background: linear-gradient(90deg, #8b5cf6, #3b82f6); }
+  .bar-meta {
+    width: 90px;
+    font-size: 0.75rem;
+    color: var(--gray);
+    flex-shrink: 0;
+  }
+
+  /* PROGRESS BAR H2 */
+  .h2-bar-row {
+    margin-bottom: 1.1rem;
+  }
+  .h2-bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+  }
+  .h2-bar-track {
+    background: var(--navy-light);
+    border-radius: 6px;
+    height: 22px;
+    overflow: hidden;
+    position: relative;
+  }
+  .h2-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+  }
+
+  /* JUNE LIVE */
+  .june-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .june-day {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .june-day.peak {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(59, 130, 246, 0.08);
+  }
+  .june-day .day { font-size: 0.72rem; color: var(--gray); margin-bottom: 0.3rem; }
+  .june-day .value { font-size: 1.4rem; font-weight: 800; color: var(--white); }
+  .june-day .note { font-size: 0.68rem; color: var(--blue-light); margin-top: 0.2rem; }
+
+  /* SEGMENTATION MATRIX */
+  .matrix-table thead th { background: var(--navy-mid); }
+  .cell-best { background: rgba(34, 197, 94, 0.12) !important; }
+  .cell-warn { background: rgba(245, 158, 11, 0.1) !important; }
+  .cell-bad { background: rgba(239, 68, 68, 0.1) !important; }
+  .cell-ideal {
+    font-weight: 700;
+    color: #4ade80 !important;
+  }
+
+  /* LEVERS */
+  .lever-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .lever-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 12px;
+    padding: 1.2rem 1.3rem;
+  }
+  .lever-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .lever-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .lever-card p {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* STRATEGY TABLE */
+  .strategy-rec {
+    font-size: 0.8rem;
+    color: var(--teal);
+  }
+
+  /* SCENARIO COMPARISON */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .scenario-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .scenario-card.highlight {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.07);
+  }
+  .scenario-card h3 { color: var(--white); margin-bottom: 0.8rem; }
+  .scenario-card.highlight h3 { color: var(--blue-light); }
+  .scenario-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    font-size: 0.85rem;
+  }
+  .scenario-stat:last-child { border-bottom: none; }
+  .scenario-stat .s-label { color: var(--gray); }
+  .scenario-stat .s-value { font-weight: 700; color: var(--white); }
+
+  /* NOTE BOX */
+  .note-box {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 10px;
+    padding: 1rem 1.3rem;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #fcd34d;
+    line-height: 1.6;
+  }
+  .note-box strong { color: #fbbf24; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--navy-light);
+    margin: 3rem 0;
+  }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    .scenario-grid { grid-template-columns: 1fr; }
+    .kpi-value { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <ul>
+    <li><a href="#hero">Eldorado</a></li>
+    <li><a href="#exec">Resumo Executivo</a></li>
+    <li><a href="#h2-status">Status H2</a></li>
+    <li><a href="#segmentation">Segmentação</a></li>
+    <li><a href="#june">Junho Ao Vivo</a></li>
+    <li><a href="#h2-revised">H2 Revisado</a></li>
+    <li><a href="#strategy">Estratégia</a></li>
+  </ul>
+</nav>
+
+<!-- 1. HERO -->
+<section id="hero">
+  <div class="hero-badge">Mercado Pago — Programa de Incentivo TC</div>
+  <div class="section-label">Apresentação Executiva</div>
+  <h1>Eldorado</h1>
+  <p class="subtitle">Convertemos usuários com oferta aprovada de cartão em portadores ativos, usando desconto em compra no Mercado Livre como incentivo de ativação.</p>
+
+  <div class="hero-flow">
+    <div class="flow-step">
+      <div class="icon">&#128100;</div>
+      <div class="label">Usuário elegível</div>
+      <div class="desc">Tem oferta TCMP aprovada por Riscos, mas ainda não aceitou</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step">
+      <div class="icon">&#127873;</div>
+      <div class="label">Recebe cupom</div>
+      <div class="desc">R$35, R$50 ou R$70 de desconto na próxima compra ML</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step">
+      <div class="icon">&#128179;</div>
+      <div class="label">Aceita o TC</div>
+      <div class="desc">Ativa o cartao Mercado Pago para usar o desconto</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step">
+      <div class="icon">&#128722;</div>
+      <div class="label">Compra no ML</div>
+      <div class="desc">Usa o TCMP na transação e resgata o benefício</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step">
+      <div class="icon">&#10003;</div>
+      <div class="label">+ usuários aceitando</div>
+      <div class="desc">+ primeiro uso do cartão · 1 desconto por CPF</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. EXECUTIVE SUMMARY -->
+<section id="exec">
+  <div class="section-label">Resumo Executivo</div>
+  <h2>Números que importam</h2>
+  <p class="subtitle">Histórico Set/25–Mai/26 — 9 meses de operação contínua</p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-value">31.000</div>
+      <div class="kpi-label">TCs incrementais/mês (média)</div>
+      <div class="kpi-sub">Set/25–Mai/26</div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-value">R$120</div>
+      <div class="kpi-label">CAC médio (Set–Mai)</div>
+      <div class="kpi-sub">R$75 melhor mês (Out/25)</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-value">R$3,7M</div>
+      <div class="kpi-label">Custo médio mensal</div>
+      <div class="kpi-sub">Range R$2,2M–R$5,7M</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-value">131.048</div>
+      <div class="kpi-label">TCs incrementais em 2026</div>
+      <div class="kpi-sub">Jan–Mai/26 (meses completos)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value">73,8%</div>
+      <div class="kpi-label">Atingimento projetado H2</div>
+      <div class="kpi-sub">Eldorado já incluído nos 73,8%</div>
+    </div>
+  </div>
+
+  <div class="insights">
+    <div class="insight-card">
+      <h4>Insight 1 — Budget não é linear</h4>
+      <p>Abr/26: <strong>R$2,2M → 22.738 TCs</strong>. Mai/26: <strong>R$4,3M → 21.625 TCs</strong>. Dobrar o budget não dobrou os TCs. O pool tem hierarquia de propensão — a segunda leva de usuários é estruturalmente menos responsiva.</p>
+    </div>
+    <div class="insight-card">
+      <h4>Insight 2 — Segmentação vale +10–15%</h4>
+      <p>Cupom errado pode <strong>destruir eficiência</strong>: Platinum B com R$35 gerou -23,5% de conversão. Com a combinação certa (NISE x Rating x Valor), o mesmo budget produz mais TCs sem custo adicional.</p>
+    </div>
+    <div class="insight-card">
+      <h4>Insight 3 — Novembro e estrategico</h4>
+      <p>Novembro com R$70 full (Gold) atingiu <strong>45.644 TCs e eficiência 4,7K/M</strong> — 50% acima da média. O timing de encendido próximo ao dia 1–5 captura o pico natural de conversão nos dias 5–10.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. H2 STATUS -->
+<section id="h2-status">
+  <div class="section-label">Contexto H2 2026</div>
+  <h2>Situação atual do plano</h2>
+  <p class="subtitle">Eldorado contribui ~21K TCs/mês dos totais abaixo. Projeção atual = 73,8% do plano H2.</p>
+
+  <div style="margin-top: 2rem;">
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Jul/26</span>
+        <span style="color: var(--gray);">378.190 / 501.646 &nbsp;<span style="color: var(--amber);">75,4%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 75.4%;">75,4%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Ago/26</span>
+        <span style="color: var(--gray);">374.440 / 496.292 &nbsp;<span style="color: var(--amber);">75,4%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 75.4%;">75,4%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Set/26</span>
+        <span style="color: var(--gray);">376.940 / 486.055 &nbsp;<span style="color: var(--amber);">77,6%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 77.6%;">77,6%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Out/26</span>
+        <span style="color: var(--gray);">384.724 / 530.581 &nbsp;<span style="color: var(--red);">72,5%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 72.5%; background: linear-gradient(90deg, #3b82f6, #f59e0b);">72,5%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Nov/26</span>
+        <span style="color: var(--gray);">399.730 / 544.456 &nbsp;<span style="color: var(--red);">73,4%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 73.4%; background: linear-gradient(90deg, #3b82f6, #f59e0b);">73,4%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row">
+      <div class="h2-bar-header">
+        <span style="color: var(--white); font-weight: 600;">Dez/26</span>
+        <span style="color: var(--gray);">333.870 / 487.030 &nbsp;<span style="color: var(--red);">68,6%</span></span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 68.6%; background: linear-gradient(90deg, #3b82f6, #ef4444);">68,6%</div>
+      </div>
+    </div>
+    <div class="h2-bar-row" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--navy-light);">
+      <div class="h2-bar-header">
+        <span style="color: var(--blue-light); font-weight: 700;">H2 TOTAL</span>
+        <span style="color: var(--blue-light); font-weight: 700;">2.247.894 / 3.046.060 &nbsp;73,8%</span>
+      </div>
+      <div class="h2-bar-track">
+        <div class="h2-bar-fill" style="width: 73.8%; background: linear-gradient(90deg, #8b5cf6, #3b82f6);">73,8%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-box" style="margin-top: 1.5rem;">
+    <strong>Gap para 80%:</strong> 189.000 TCs adicionais no H2. Eldorado com todos os levers (C1) entrega +88.225 TCs = 47% desse gap. Os 53% restantes dependem de Riscos expandir a base elegível e outros canais.
+  </div>
+</section>
+
+<!-- 4. O MODELO REAL -->
+<section id="segmentation">
+  <div class="section-label">Análise BQ Out/25–Mai/26</div>
+  <h2>Segmentação NISE x Rating x Cupom</h2>
+  <p class="subtitle">Cada combinação tem um cupom ideal. Usar o errado reduz eficiência ou, no pior caso, piora a conversão.</p>
+
+  <div class="table-wrap" style="margin-top: 1.5rem;">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Segmento</th>
+          <th>R$35<br><span style="font-weight:400;font-size:0.68rem;">Melhoria / Lift / CAC</span></th>
+          <th>R$50<br><span style="font-weight:400;font-size:0.68rem;">Melhoria / Lift / CAC</span></th>
+          <th>R$70<br><span style="font-weight:400;font-size:0.68rem;">Melhoria / Lift / CAC</span></th>
+          <th>Cupom Ideal</th>
+          <th>Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Gold A</strong></td>
+          <td>+10,0% / 0,40pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$125</span></td>
+          <td>+23,2% / 0,40pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$97</span></td>
+          <td>+32,1% / 0,41pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$124</span></td>
+          <td class="cell-ideal">R$50<br><span style="font-size:0.72rem;color:#fbbf24;">R$70 só Nov</span></td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$50 tem melhor CAC (R$97). R$70 reservado para Novembro.</td>
+        </tr>
+        <tr>
+          <td><strong>Gold B</strong></td>
+          <td>+2,9% / 0,06pp<br><span style="font-size:0.72rem;color:#f87171;font-weight:700;">CAC R$580</span></td>
+          <td>+16,1% / 0,20pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$128</span></td>
+          <td>+22,5% / 0,20pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$175</span></td>
+          <td class="cell-ideal">R$50</td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$35 tem CAC R$580 — nunca usar. R$50 é o ideal.</td>
+        </tr>
+        <tr>
+          <td><strong>Platinum A</strong></td>
+          <td>—</td>
+          <td>+35,1% / 0,22pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$86</span></td>
+          <td>+32,5% / 0,29pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$125</span></td>
+          <td class="cell-ideal">R$70</td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$50 tem melhor CAC (R$86), R$70 dá +33% mais TCs. Escolher por volume vs eficiência.</td>
+        </tr>
+        <tr>
+          <td><strong>Platinum B</strong></td>
+          <td>—</td>
+          <td>+24,9% / 0,12pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$110</span></td>
+          <td>R$70 em Nov<br><span style="font-size:0.75rem;color:#fbbf24;">+18% / 0,13pp</span><br><span style="font-size:0.72rem;color:#f87171;font-weight:700;">CAC R$202</span></td>
+          <td class="cell-ideal">R$50<br><span style="font-size:0.72rem;color:#fbbf24;">R$70 Nov</span></td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$50 ano todo (CAC R$110). Em novembro, R$70 para mais volume apesar do CAC maior.</td>
+        </tr>
+        <tr>
+          <td><strong>Silver A</strong></td>
+          <td>+13,1% / 0,39pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$135</span></td>
+          <td>+31,2% / 0,63pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$93</span></td>
+          <td>—</td>
+          <td class="cell-ideal">R$35</td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$50 tem CAC melhor (R$93 vs R$135), mas base com R$35 é 3× maior. R$35 maximiza volume.</td>
+        </tr>
+        <tr>
+          <td><strong>Silver B</strong></td>
+          <td>+9,4% / 0,18pp<br><span style="font-size:0.72rem;color:#94a3b8;">CAC R$178</span></td>
+          <td>+24,0% / 0,30pp<br><span style="font-size:0.72rem;color:#4ade80;font-weight:700;">CAC R$114</span></td>
+          <td>—</td>
+          <td class="cell-ideal">R$35</td>
+          <td style="color: var(--gray); font-size: 0.8rem;">R$50 tem CAC melhor (R$114), mas volume com R$35 (base 9M) supera.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note-box">
+    <strong>Regra crítica:</strong> Platinum B jamais deve receber R$35. Gold/Silver com R$70 fora de novembro gera custo desnecessário sem ganho de lift equivalente. A matriz correta entrega +10–15% de eficiência no mesmo budget.
+  </div>
+  <div class="note-box" style="margin-top:0.75rem;background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25);color:#86efac;">
+    <strong style="color:#4ade80;">Nota:</strong> Only Nav (Sem rating) tem lift positivo de 26,2% em junho — manter na base. Recomendação de remoção não se aplica a esse grupo. Os únicos ratings ruins (F, H, J) somam apenas 184 usuários — impacto negligível.
+  </div>
+</section>
+
+<!-- 6. JUNHO AO VIVO -->
+<section id="june" style="background: var(--navy-mid); max-width: 100%; padding: 5rem 0;">
+  <div style="max-width: 1100px; margin: 0 auto; padding: 0 2rem;">
+    <div class="section-label">Dados reais — BigQuery</div>
+    <h2>Junho 2026 ao vivo</h2>
+    <p class="subtitle">Campanha ativa (8–30/jun) · 9 dias realizados (8–16/jun) · Encendido de junho ainda não ocorreu · Padrão por dia da semana identificado no BQ</p>
+
+    <!-- Dados reais dia a dia - 10 dias (8-17 jun) -->
+    <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:0.5rem;margin-bottom:1rem;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">8/jun Seg</div><div style="font-size:1rem;font-weight:700;color:#64748b;">R$65K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Parcial</div></div>
+      <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">9/jun Ter</div><div style="font-size:1rem;font-weight:700;color:#60a5fa;">R$106K</div><div style="font-size:0.65rem;color:#60a5fa;margin-top:0.2rem;">1 dia completo</div></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">10/jun Qua</div><div style="font-size:1rem;font-weight:700;">R$95K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Normal</div></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">11/jun Qui</div><div style="font-size:1rem;font-weight:700;">R$88K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Normal</div></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">12/jun Sex</div><div style="font-size:1rem;font-weight:700;color:#94a3b8;">R$66K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Fraca</div></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">13/jun Sab</div><div style="font-size:1rem;font-weight:700;color:#64748b;">R$60K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Menor</div></div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">14/jun Dom</div><div style="font-size:1rem;font-weight:700;">R$79K</div><div style="font-size:0.65rem;color:#475569;margin-top:0.2rem;">Dom maior Sab</div></div>
+      <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">15/jun Seg</div><div style="font-size:1rem;font-weight:700;color:#4ade80;">R$86K</div><div style="font-size:0.65rem;color:#4ade80;margin-top:0.2rem;">Seg real</div></div>
+      <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">17/jun Qua</div><div style="font-size:1rem;font-weight:700;color:#4ade80;">R$79K</div><div style="font-size:0.65rem;color:#4ade80;margin-top:0.2rem;">Queda leve</div></div>
+      <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:0.7rem;text-align:center;"><div style="font-size:0.68rem;color:#64748b;margin-bottom:0.2rem;">16/jun Ter</div><div style="font-size:1rem;font-weight:700;color:#4ade80;">R$83K</div><div style="font-size:0.65rem;color:#4ade80;margin-top:0.2rem;">Sem encendido</div></div>
+    </div>
+
+    <!-- Cards: encendido + padrao + realizado -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:12px;padding:1.2rem;">
+        <div style="font-size:0.75rem;color:#fbbf24;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem;">Encendido pendente</div>
+        <p style="font-size:0.8rem;color:#94a3b8;line-height:1.6;">
+          Junho sem encendido até agora. O pico de Jun/9 (R$106K) foi o <strong style="color:#e2e8f0;">efeito primeiro dia de cupom</strong>, não encendido.<br><br>
+          Desde Jun/10 o ritmo estabilizou em <strong style="color:#e2e8f0;">~R$85K/dia</strong>. Quando o encendido chegar, espera-se spike adicional sobre esse nivel.
+        </p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:12px;padding:1.2rem;">
+        <div style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem;">Padrão dia da semana</div>
+        <div style="font-size:0.78rem;color:#94a3b8;line-height:1.9;">
+          <span style="color:#60a5fa;font-weight:700;">Qua: R$95K</span> (mais forte util)<br>
+          Qui: R$88K / Seg: R$86K / Ter: R$84K<br>
+          Dom: R$79K / Sex: R$66K<br>
+          <span style="color:#64748b;">Sab: R$60K (menor)</span>
+        </div>
+        <div style="margin-top:0.6rem;font-size:0.72rem;color:#475569;">Media util: R$85K &middot; FDS: R$70K</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:12px;padding:1.2rem;">
+        <div style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem;">Realizado 10 dias (8–17 jun)</div>
+        <div style="font-size:2rem;font-weight:800;color:#4ade80;">R$801K</div>
+        <div style="font-size:0.78rem;color:#94a3b8;margin-top:0.4rem;">
+          18.253 usuários usaram cupom<br>
+          5.922 incrementais &middot; CAC R$135<br>
+          Melhoria: <strong style="color:#e2e8f0;">16,7%</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projeção e comparativo R70 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:12px;padding:1.3rem;">
+        <div style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.8rem;">Projeção junho (17–30 jun)</div>
+        <div style="font-size:1.8rem;font-weight:800;color:#f8fafc;">R$1,84M</div>
+        <div style="font-size:0.78rem;color:#94a3b8;margin-top:0.5rem;line-height:1.8;">
+          Sem encendido: <strong style="color:#e2e8f0;">R$1,84M</strong> &middot; sobra R$1,26M<br>
+          Com encendido pendente: <strong style="color:#e2e8f0;">R$1,88M</strong> &middot; sobra R$1,22M<br>
+          Budget junho: R$3,1M<br>
+          <span style="font-size:0.72rem;color:#475569;">Projeção por dia da semana ajustada</span>
+        </div>
+      </div>
+      <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:1.3rem;">
+        <div style="font-size:0.75rem;color:#fbbf24;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.8rem;">E se tivesse usado R$70 no lugar do R$50?</div>
+        <div style="font-size:0.78rem;color:#94a3b8;line-height:1.9;">
+          <span style="color:#e2e8f0;font-weight:700;">Incrementais:</span> 15.368 vs 14.574 <span style="color:#4ade80;">(+794)</span><br>
+          <span style="color:#e2e8f0;font-weight:700;">Custo:</span> R$2,35M vs R$1,84M <span style="color:#f87171;">(+R$0,49M)</span><br>
+          <span style="color:#e2e8f0;font-weight:700;">CAC:</span> R$153 vs R$128 <span style="color:#f87171;">(+R$25)</span><br>
+          <span style="color:#e2e8f0;font-weight:700;">Custo marginal dos +794 TCs: R$618/TC</span>
+        </div>
+        <div style="margin-top:0.7rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#94a3b8;line-height:1.5;">
+          R$70 só compensa para <strong style="color:#fbbf24;">Platinum A</strong> (+33% TCs/usuário). Para Gold A/B o lift é igual ao R$50 em 0,01pp de diferença.
+        </div>
+      </div>
+    </div>
+
+    <!-- Padrão dia semana + total + projeção -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.5rem;">
+      <div style="background:var(--navy);border:1px solid var(--navy-light);border-radius:12px;padding:1.3rem;">
+        <h3 style="font-size:0.85rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.8rem;">Padrão dia da semana</h3>
+        <div style="font-size:0.8rem;color:var(--gray);line-height:2;">
+          <span style="color:#60a5fa;font-weight:700;">Ter: R$106K</span> (126% da média)<br>
+          <span style="color:#93c5fd;">Qua: R$95K</span> (112%)<br>
+          Qui: R$88K (104%)<br>
+          Seg: R$86K (102%)<br>
+          Dom: R$80K (94%)<br>
+          Sex: R$67K (79%)<br>
+          <span style="color:#64748b;">Sáb: R$60K (71%)</span>
+        </div>
+        <div style="margin-top:0.8rem;font-size:0.75rem;color:#64748b;">Média dia útil: R$85K · FDS: R$70K · 8 dias confirmados</div>
+      </div>
+      <div style="background:var(--navy);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:1.3rem;">
+        <h3 style="font-size:0.85rem;color:#4ade80;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.8rem;">Realizado — 10 dias (8-17 jun)</h3>
+        <div style="font-size:2.2rem;font-weight:800;color:#4ade80;">R$727K</div>
+        <div style="font-size:0.8rem;color:var(--gray);margin-top:0.5rem;">
+          16.578 usuários usaram cupom<br>
+          Encendido de junho: <strong style="color:#fbbf24;">ainda não ocorreu</strong><br>
+          Próximo pico esperado: <strong style="color:#60a5fa;">Jun 17–19 (Ter–Qui)</strong> (~R$128K c/encendido)
+        </div>
+      </div>
+      <div style="background:var(--navy);border:1px solid var(--navy-light);border-radius:12px;padding:1.3rem;">
+        <h3 style="font-size:0.85rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.8rem;">Projeção junho (17–30)</h3>
+        <div style="font-size:1.8rem;font-weight:800;color:var(--white);">R$1,84M–R$1,95M</div>
+        <div style="font-size:0.78rem;color:var(--gray);margin-top:0.5rem;line-height:1.6;">
+          Sem encendido: <strong style="color:#e2e8f0;">R$1,84M</strong> (sobra R$1,26M)<br>
+          Com encendido pendente: <strong style="color:#e2e8f0;">R$1,88M</strong> (sobra R$1,22M)<br>
+          Pico esperado Jun/18-19 (Qui-Sex):<br>
+          <span style="color:#475569;">Projeção por dia da semana ajustada</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. H2 REVISED -->
+<section id="h2-revised">
+  <div class="section-label">Projeção otimizada</div>
+  <h2>H2 Revisado — com todos os levers</h2>
+  <p class="subtitle">Base elegível: 9,5M usuários (sem redução). Comparativo: execução atual vs. full month + R$70 Platinum A.</p>
+
+  <!-- O que é a otimização -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+    <div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:1.2rem;">
+      <div style="font-size:0.72rem;color:#4ade80;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Lever 1 — Full month</div>
+      <div style="font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:0.4rem;">20d → 30d</div>
+      <p style="font-size:0.8rem;color:#94a3b8;line-height:1.5;">Campanhas atuais rodam ~18-20 dias/mês. Estender para 30 dias gera +50% de TCs proporcionalmente. Custo também sobe proporcionalmente — por isso o budget adicional de +R$7-9M.</p>
+    </div>
+    <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:1.2rem;">
+      <div style="font-size:0.72rem;color:#60a5fa;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Lever 2 — Only Nav: lift positivo</div>
+      <div style="font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:0.4rem;">Base: 9,5M</div>
+      <p style="font-size:0.8rem;color:#94a3b8;line-height:1.5;">Grupo Only Nav (509K usuários) tem melhoria de 26,2% em junho — acima da média. Manter na base. Os únicos ratings ruins (F,H,J) são apenas 184 usuários — impacto negligível.</p>
+    </div>
+    <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:1.2rem;">
+      <div style="font-size:0.72rem;color:#fbbf24;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Lever 3 — Novembro R$70</div>
+      <div style="font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:0.4rem;">43K TCs em Nov</div>
+      <p style="font-size:0.8rem;color:#94a3b8;line-height:1.5;">Novembro historicamente excepcional com R$70 full month (efic. 4,7K/M vs 3,5K/M atual). Único mês onde R$70 supera R$50 claramente em volume. Projetado: +12K vs cenário atual.</p>
+    </div>
+  </div>
+
+  <!-- 4 cenarios + atual -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.8rem;margin-bottom:2rem;">
+
+    <!-- Cenario 0: Atual -->
+    <div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">Atual — sem mudanças</div>
+      <div style="font-size:1.8rem;font-weight:800;color:#f8fafc;margin-bottom:1rem;">~21.000 TCs/mês</div>
+      <div style="font-size:0.78rem;color:#94a3b8;line-height:2;">
+        Média histórica: <strong style="color:#e2e8f0;">set/25–mai/26</strong><br>
+        Base: <strong style="color:#e2e8f0;">~9,5M únicos</strong><br>
+        CAC médio: <strong style="color:#e2e8f0;">~R$120</strong><br>
+        9 meses confirmados
+      </div>
+      <div style="margin-top:1rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#64748b;">
+        R$35 Silver + R$50 Gold/Plat<br>
+        ~19 dias de campanha por mês<br>
+        Inclui grupos com lift negativo
+      </div>
+    </div>
+
+    <!-- Cenario 1: Full month -->
+    <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.25);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;color:#4ade80;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">Cenário 1 — Full month (30d)</div>
+      <div style="font-size:1.8rem;font-weight:800;color:#4ade80;margin-bottom:1rem;">33.250 TCs/mês</div>
+      <div style="font-size:0.78rem;color:#94a3b8;line-height:2;">
+        Base: <strong style="color:#4ade80;">9,5M</strong> <span style="color:#64748b;">(sem redução)</span><br>
+        Eficiência: <strong style="color:#4ade80;">3,5K/M</strong><br>
+        Dias: <strong style="color:#4ade80;">30d/mês</strong><br>
+        CAC: <strong style="color:#e2e8f0;">~R$128</strong>
+      </div>
+      <div style="margin-top:1rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#94a3b8;line-height:1.5;">
+        +12.250 TCs/mês vs atual | +88.225 total H2<br>
+        Budget adicional: +R$3,12M H2<br>
+        <span style="color:#4ade80;font-weight:600;">Campanha full month (30d) — única alavanca</span>
+      </div>
+    </div>
+
+    <!-- Cenario 2: Full month + R$70 Platinum A -->
+    <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;color:#fbbf24;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">Cenário 2 — Full month + R$70 Platinum A</div>
+      <div style="font-size:1.8rem;font-weight:800;color:#fbbf24;margin-bottom:1rem;">35.910 TCs/mês</div>
+      <div style="font-size:0.78rem;color:#94a3b8;line-height:2;">
+        Base: <strong style="color:#e2e8f0;">9,5M</strong> (sem redução)<br>
+        Eficiência: <strong style="color:#fbbf24;">3,78K/M</strong><br>
+        Dias: <strong style="color:#fbbf24;">30d/mês</strong><br>
+        CAC: <strong style="color:#e2e8f0;">~R$178 marginal</strong>
+      </div>
+      <div style="margin-top:1rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#94a3b8;line-height:1.5;">
+        +13.580 TCs/mês vs atual | +98.446 total H2 (Nov: todos R$70)<br>
+        +1.329 TCs/mês vs C1 (Nov: +3.438 vs C1)<br>
+        Custo extra: +4,8% sobre C1<br>
+        <span style="color:#fbbf24;font-weight:600;">CAC marginal: R$178/TC extra</span>
+      </div>
+    </div>
+
+    <!-- Cenario 3: Full month + cupom 3 dias -->
+    <div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;color:#a78bfa;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">C2 + 3 dias</div>
+      <div style="font-size:1.8rem;font-weight:800;color:#a78bfa;margin-bottom:1rem;">33.250 TCs/mês</div>
+      <div style="font-size:0.78rem;color:#94a3b8;line-height:2;">
+        Base: <strong style="color:#e2e8f0;">9,5M</strong><br>
+        Dias: <strong style="color:#a78bfa;">30d/mês</strong><br>
+        Cupom: <strong style="color:#a78bfa;">3 dias</strong> (era 7)<br>
+        CAC: <strong style="color:#a78bfa;">~R$109</strong>
+      </div>
+      <div style="margin-top:1rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#94a3b8;line-height:1.5;">
+        Mesmos TCs que C1 · -5,4% custo<br>
+        Budget adicional: +R$4,00M H2<br>
+        <span style="color:#a78bfa;font-weight:600;">C2 + validade 3 dias — sem impacto em TCs</span>
+      </div>
+    </div>
+
+    <!-- Cenario 4: Full month + todos R70 + 3 dias -->
+    <div style="background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.25);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;color:#e879f9;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">Cenário 4 — Todos R$70 + 3 dias</div>
+      <div style="font-size:1.8rem;font-weight:800;color:#e879f9;margin-bottom:1rem;">35.810 TCs/mês</div>
+      <div style="font-size:0.78rem;color:#94a3b8;line-height:2;">
+        Base: <strong style="color:#e2e8f0;">9,5M</strong><br>
+        Dias: <strong style="color:#e879f9;">30d/mês</strong><br>
+        Cupom: <strong style="color:#e879f9;">R$70 todos + 3 dias</strong><br>
+        CAC: <strong style="color:#e2e8f0;">~R$128</strong>
+      </div>
+      <div style="margin-top:1rem;padding:0.7rem;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.75rem;color:#94a3b8;line-height:1.5;">
+        +14.810 TCs/mês vs atual | +104.719 total H2<br>
+        Budget adicional: +R$7,94M H2<br>
+        <span style="color:#e879f9;font-weight:600;">C2 equivalente em TCs, R$1,7M mais barato</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario-grid" style="display:none;">
+    <div class="scenario-card">
+      <h3>Cenário Atual</h3>
+      <div class="scenario-stat"><span class="s-label">TCs/mês estimados</span><span class="s-value">~21.000</span></div>
+      <div class="scenario-stat"><span class="s-label">Total H2</span><span class="s-value">126.000 TCs</span></div>
+      <div class="scenario-stat"><span class="s-label">Budget adicional estimado</span><span class="s-value">Nenhum</span></div>
+      <div class="scenario-stat"><span class="s-label">CAC estimado H2</span><span class="s-value">~R$120</span></div>
+    </div>
+    <div class="scenario-card highlight">
+      <h3>Com Otimização Total</h3>
+      <div class="scenario-stat"><span class="s-label">TCs/mês otimizado</span><span class="s-value" style="color: #4ade80;">33.000–41.000</span></div>
+      <div class="scenario-stat"><span class="s-label">Total H2</span><span class="s-value" style="color: #4ade80;">214.225 TCs (+88.225) / C2: 224.446 (+98.446)</span></div>
+      <div class="scenario-stat"><span class="s-label">Budget adicional realista</span><span class="s-value" style="color: #fbbf24;">+R$3,12M H2 (C1) · +R$4,31M (C2)</span></div>
+      <div class="scenario-stat"><span class="s-label">Contribuição ao gap 80%</span><span class="s-value" style="color: var(--blue-light);">47% dos 189K (C1) · 56% (C2)</span></div>
+    </div>
+  </div>
+
+  <div class="table-wrap" style="margin-top: 1.5rem;">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:60px;">Mês</th>
+          <th>Atual<br><span style="font-weight:400;color:#64748b;font-size:0.68rem;">TCs / Budget</span></th>
+          <th style="color:#4ade80;">C1 — Full month 30d<br><span style="font-weight:400;font-size:0.68rem;">TCs / Budget / Extra</span></th>
+          <th style="color:#fbbf24;">C2 — + R$70 Plat A<br><span style="font-weight:400;font-size:0.68rem;">TCs / Budget / Extra</span></th>
+          <th style="color:#a78bfa;">C2 + 3 dias<br><span style="font-weight:400;font-size:0.68rem;">TCs / Budget / Extra</span></th>
+          <th style="color:#e879f9;">C4 — Todos R$70 + 3d<br><span style="font-weight:400;font-size:0.68rem;">TCs / Budget / Extra</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Jul/26</td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,20M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">33.250</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,67M</span> <span style="font-size:0.7rem;color:#4ade80;font-weight:600;">+R$0,47M</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,63M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$1,43M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,38M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$1,18M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">35.810</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,39M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$1,19M</span></td>
+        </tr>
+        <tr>
+          <td>Ago/26</td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$2,35M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">33.250</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,67M</span> <span style="font-size:0.7rem;color:#4ade80;font-weight:600;">+R$1,32M</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,63M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$2,28M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,38M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$2,03M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">35.810</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,39M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$2,04M</span></td>
+        </tr>
+        <tr>
+          <td>Set/26</td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$2,35M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">33.250</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,68M</span> <span style="font-size:0.7rem;color:#4ade80;font-weight:600;">+R$1,33M</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,65M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$2,30M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,40M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$2,05M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">35.810</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,40M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$2,05M</span></td>
+        </tr>
+        <tr>
+          <td>Out/26</td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,90M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">36.575</span><br><span style="font-size:0.73rem;color:#64748b;">R$3,90M</span> <span style="font-size:0.7rem;color:#64748b;">OK</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">38.037</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,93M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$1,03M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">38.037</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,66M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$0,76M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">39.391</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,66M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$0,76M</span></td>
+        </tr>
+        <tr style="background:rgba(59,130,246,0.05);">
+          <td><strong>Nov/26</strong></td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$5,30M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">44.650</span><br><span style="font-size:0.73rem;color:#64748b;">R$5,30M</span> <span style="font-size:0.7rem;color:#64748b;">OK</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">48.088</span><br><span style="font-size:0.73rem;color:#64748b;">R$6,70M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$1,40M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">48.088</span><br><span style="font-size:0.73rem;color:#64748b;">R$6,34M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$1,04M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">48.088</span><br><span style="font-size:0.73rem;color:#64748b;">R$6,34M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$1,04M</span></td>
+        </tr>
+        <tr>
+          <td>Dez/26</td>
+          <td><span style="font-weight:600;">21.000</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,40M</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">33.250</span><br><span style="font-size:0.73rem;color:#64748b;">R$4,40M</span> <span style="font-size:0.7rem;color:#64748b;">OK</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$5,56M</span> <span style="font-size:0.7rem;color:#fbbf24;font-weight:600;">+R$1,16M</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">34.579</span><br><span style="font-size:0.73rem;color:#64748b;">R$5,26M</span> <span style="font-size:0.7rem;color:#a78bfa;font-weight:600;">+R$0,86M</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">35.810</span><br><span style="font-size:0.73rem;color:#64748b;">R$5,26M</span> <span style="font-size:0.7rem;color:#e879f9;font-weight:600;">+R$0,86M</span></td>
+        </tr>
+        <tr class="table-footer">
+          <td>H2 Total</td>
+          <td><span style="font-weight:700;">126.000 TCs</span><br><span style="font-size:0.73rem;">R$21,50M</span><br><span style="font-size:0.72rem;color:#fbbf24;font-weight:700;">CAC R$171</span></td>
+          <td><span style="color:#4ade80;font-weight:700;">214.225 (+88K)</span><br><span style="font-size:0.73rem;color:#64748b;">R$24,62M +R$3,12M</span><br><span style="font-size:0.72rem;color:#fbbf24;font-weight:700;">CAC R$115</span></td>
+          <td><span style="color:#fbbf24;font-weight:700;">224.446 (+98K)</span><br><span style="font-size:0.73rem;color:#64748b;">R$26,96M +R$4,31M</span><br><span style="font-size:0.72rem;color:#fbbf24;font-weight:700;">CAC R$120</span></td>
+          <td><span style="color:#a78bfa;font-weight:700;">224.446 (=C2)</span><br><span style="font-size:0.73rem;color:#64748b;">R$25,50M +R$4,00M</span><br><span style="font-size:0.72rem;color:#fbbf24;font-weight:700;">CAC R$114</span></td>
+          <td><span style="color:#e879f9;font-weight:700;">230.719 (+105K)</span><br><span style="font-size:0.73rem;color:#64748b;">R$29,44M +R$7,94M</span><br><span style="font-size:0.72rem;color:#fbbf24;font-weight:700;">CAC R$128</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <div class="note-box">
+    <strong>Aviso metodológico:</strong> Budget adicional para full month (30d) em todos os meses é +R$3,12M no H2 (C1). C2 adiciona R$70 para Platinum A, totalizando +R$4,31M extra. A única alavanca de C1 é a extensão para full month — não há redução de base. Only Nav (Sem rating) tem lift positivo de 26,2% em junho e permanece na base.
+  </div>
+</section>
+
+<!-- 8. STRATEGY -->
+<section id="strategy" style="background: var(--navy-mid); max-width: 100%; padding: 5rem 0;">
+  <div style="max-width: 1100px; margin: 0 auto; padding: 0 2rem;">
+    <div class="section-label">Playbook H2</div>
+    <h2>Estratégia mês a mês</h2>
+    <p class="subtitle">Recomendações operacionais com base no modelo validado e histórico de segmentação</p>
+
+    <div class="table-wrap" style="margin-top: 1.5rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>Duração alvo</th>
+            <th>Cupom Gold</th>
+            <th>Cupom Platinum</th>
+            <th>Cupom Silver</th>
+            <th>TCs esperados</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Jul/26</td>
+            <td>Full month</td>
+            <td><span class="tag-best">R$50</span></td>
+            <td>A: R$70 / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: #4ade80; font-weight: 600;">33.250</td>
+          </tr>
+          <tr>
+            <td>Ago/26</td>
+            <td>Full month</td>
+            <td><span class="tag-best">R$50</span></td>
+            <td>A: R$70 / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: #4ade80; font-weight: 600;">33.250</td>
+          </tr>
+          <tr>
+            <td>Set/26</td>
+            <td>Full month</td>
+            <td><span class="tag-best">R$50</span></td>
+            <td>A: R$70 / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: #4ade80; font-weight: 600;">33.250</td>
+          </tr>
+          <tr>
+            <td>Out/26</td>
+            <td>Full month + R$70 Plat A</td>
+            <td><span class="tag-best">R$50</span></td>
+            <td>A: <strong style="color: #4ade80;">R$70</strong> / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: #4ade80; font-weight: 600;">36.575</td>
+          </tr>
+          <tr style="background: rgba(59, 130, 246, 0.08);">
+            <td><strong>Nov/26</strong> <span class="tag-best">CRÍTICO</span></td>
+            <td><strong>Full month</strong></td>
+            <td><strong style="color: #60a5fa;">R$70 FULL</strong></td>
+            <td>A: R$70 / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: var(--blue-light); font-weight: 700;">44.650</td>
+          </tr>
+          <tr>
+            <td>Dez/26</td>
+            <td>Full month</td>
+            <td><span class="tag-best">R$50</span></td>
+            <td>A: R$70 / B: R$50</td>
+            <td><span class="tag-best">R$35</span></td>
+            <td style="color: #4ade80; font-weight: 600;">33.250</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+      <div style="background: var(--navy); border: 1px solid var(--navy-light); border-radius: 12px; padding: 1.3rem;">
+        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem;">O que está no controle de Eldorado</h4>
+        <ul style="font-size: 0.82rem; color: var(--gray); line-height: 1.8; padding-left: 1.1rem;">
+          <li>Timing de encendido (dia 1 vs. dia 8)</li>
+          <li>Duração da campanha (full month vs. parcial)</li>
+          <li>Segmentação correta por NISE x Rating</li>
+          <li>Valor do cupom por segmento</li>
+        </ul>
+      </div>
+      <div style="background: var(--navy); border: 1px solid var(--navy-light); border-radius: 12px; padding: 1.3rem;">
+        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem;">O que depende de outros times</h4>
+        <ul style="font-size: 0.82rem; color: var(--gray); line-height: 1.8; padding-left: 1.1rem;">
+          <li>Riscos: expansão da base elegível (hoje 9,5M)</li>
+          <li>Budget incremental aprovado para full month</li>
+          <li>Outros canais: 53% do gap para 80% não é Eldorado (C1 cobre 47%)</li>
+        </ul>
+      </div>
+      <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 12px; padding: 1.3rem;">
+        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--blue-light); margin-bottom: 0.6rem;">Próximo passo imediato</h4>
+        <p style="font-size: 0.82rem; color: var(--gray); line-height: 1.65;">
+          Confirmar encendido de <strong style="color: var(--white);">julho no dia 1</strong> com segmentação Gold R$50 / Silver R$35 / Platinum A R$70. Alinhar com Riscos sobre abertura de pool para Platinum B (R$50 apenas).
+        </p>
+      </div>
+    </div>
+
+    <!-- HISTORICAL TABLE -->
+    <div style="margin-top: 3rem;">
+      <h3 style="font-size: 1.1rem; color: var(--white); margin-bottom: 0.3rem;">Histórico completo Set/25–Mai/26</h3>
+      <p style="font-size: 0.8rem; color: var(--gray); margin-bottom: 1rem;">Referência para benchmarking de performance</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mes</th>
+              <th>TCs Incrementais</th>
+              <th>Custo</th>
+              <th>CAC</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Set/25</td>
+              <td>30.790</td>
+              <td>R$2,8M</td>
+              <td>R$91</td>
+              <td style="color: var(--gray); font-size: 0.8rem;">R$35+R$50 — lançamento</td>
+            </tr>
+            <tr>
+              <td>Out/25</td>
+              <td><strong>42.713</strong></td>
+              <td>R$3,2M</td>
+              <td style="color: #4ade80; font-weight: 600;">R$75 <span class="tag-best">melhor CAC</span></td>
+              <td style="color: var(--gray); font-size: 0.8rem;">Melhor mês fora Novembro</td>
+            </tr>
+            <tr style="background: rgba(59, 130, 246, 0.07);">
+              <td><strong>Nov/25</strong> <span class="tag-best">excepcional</span></td>
+              <td><strong style="color: var(--blue-light);">45.644</strong></td>
+              <td>R$5,7M</td>
+              <td>R$125</td>
+              <td style="color: var(--gray); font-size: 0.8rem;">R$70 full para Gold — pico histórico</td>
+            </tr>
+            <tr>
+              <td>Dez/25</td>
+              <td>28.330</td>
+              <td>R$3,1M</td>
+              <td>R$109</td>
+              <td style="color: var(--gray); font-size: 0.8rem;"></td>
+            </tr>
+            <tr>
+              <td>Jan/26</td>
+              <td>21.283</td>
+              <td>R$2,9M</td>
+              <td>R$136</td>
+              <td style="color: var(--gray); font-size: 0.8rem;">R$70+R$35+R$20 — mix complexo</td>
+            </tr>
+            <tr>
+              <td>Fev/26</td>
+              <td>32.780</td>
+              <td>R$4,9M</td>
+              <td>R$149</td>
+              <td style="color: var(--gray); font-size: 0.8rem;"></td>
+            </tr>
+            <tr>
+              <td>Mar/26</td>
+              <td>32.622</td>
+              <td>R$4,2M</td>
+              <td>R$129</td>
+              <td style="color: var(--gray); font-size: 0.8rem;"></td>
+            </tr>
+            <tr>
+              <td>Abr/26</td>
+              <td>22.738</td>
+              <td>R$2,2M</td>
+              <td>R$98</td>
+              <td style="color: var(--gray); font-size: 0.8rem;">18 dias — controle próprio</td>
+            </tr>
+            <tr>
+              <td>Mai/26</td>
+              <td>21.625</td>
+              <td>R$4,3M</td>
+              <td style="color: #f87171; font-weight: 600;">R$199 <span class="tag-bad">pior eficiência</span></td>
+              <td style="color: var(--gray); font-size: 0.8rem;">Pool depletion — budget 2x não escalou TCs</td>
+            </tr>
+            <tr class="table-footer">
+              <td>Media</td>
+              <td>31.000</td>
+              <td>R$3,7M</td>
+              <td>R$120</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--navy-light);">
+      <p style="font-size: 0.75rem; color: var(--gray);">Eldorado — Mercado Pago &nbsp;|&nbsp; Dados validados BQ &nbsp;|&nbsp; Atualizado: 17 Jun 2026</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
