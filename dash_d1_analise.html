@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D1 FULL — Análise de Conversão</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f4f5f7;color:#333}
+.header{background:linear-gradient(135deg,#009ee3,#00c1df);color:#fff;padding:20px 32px;display:flex;justify-content:space-between;align-items:flex-end}
+.header h1{font-size:20px;font-weight:700;margin-bottom:3px}
+.header p{font-size:12px;opacity:.85}
+.header .meta{text-align:right;font-size:11px;opacity:.8;line-height:1.7}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+
+/* filtros */
+.filters{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px;display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.filter-group{display:flex;align-items:center;gap:7px}
+.filter-label{font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+select{padding:4px 8px;border:1.5px solid #dde;border-radius:6px;font-size:12px;font-weight:600;color:#444;background:#fff;cursor:pointer}
+select:focus{outline:none;border-color:#009ee3}
+
+/* janela conversão */
+.window-bar{background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.window-label{font-size:12px;font-weight:700;color:#444}
+.btn-window{padding:6px 16px;border:2px solid #dde;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#666;transition:all .15s}
+.btn-window:hover{border-color:#009ee3;color:#009ee3}
+.btn-window.active{background:#009ee3;border-color:#009ee3;color:#fff}
+.window-note{font-size:11px;color:#aaa;margin-left:8px}
+
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:10px;padding:13px 14px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;border-top:3px solid #dde}
+.kpi.sent{border-color:#8b5cf6}.kpi.arrived{border-color:#009ee3}.kpi.shown{border-color:#00b89a}
+.kpi.open{border-color:#f0711a}.kpi.conv{border-color:#00a650}.kpi.total{border-color:#6366f1}.kpi.sem{border-color:#aaa}
+.kpi-label{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.kpi-value{font-size:18px;font-weight:800;color:#222}
+.kpi-sub{font-size:10px;color:#bbb;margin-top:2px}
+
+/* charts */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.card h3{font-size:13px;font-weight:600;color:#444;margin-bottom:4px}
+.card .sub{font-size:11px;color:#aaa;margin-bottom:14px}
+.badge-window{display:inline-block;padding:1px 8px;border-radius:12px;font-size:10px;font-weight:700;background:#e8f4fd;color:#009ee3;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>D1 FULL — Análise de Conversão</h1>
+    <p>Funil Sent→Arrived→Shown→Open e taxa de conversão por janela temporal pós-D1 | TC Full | MLB 2026</p>
+  </div>
+  <div class="meta">Fonte: BT_CCARD_PROPOSAL × BT_OC_CUST_EVENT<br>Rating: A/B/C agrupado | Janela: encendido→aceite</div>
+</div>
+
+<div class="container">
+
+  <!-- Filtros -->
+  <div class="filters">
+    <div class="filter-group"><span class="filter-label">Safra:</span>
+      <select id="fSafra"><option value="">Todas</option></select></div>
+    <div class="filter-group"><span class="filter-label">Flag Encen:</span>
+      <select id="fEncen"><option value="">Todos</option><option>Primeira Proposta</option><option>Reencendido</option></select></div>
+    <div class="filter-group"><span class="filter-label">App Ativo:</span>
+      <select id="fApp"><option value="">Todos</option><option>1. MP</option><option>2. MP y ML</option><option>3. ML</option><option>4. Sem App Ativo</option></select></div>
+    <div class="filter-group"><span class="filter-label">NISE:</span>
+      <select id="fNise"><option value="">Todos</option><option>PLATINUM</option><option>GOLD</option><option>SILVER</option><option>BRONZE</option><option>Sem Info</option></select></div>
+    <div class="filter-group"><span class="filter-label">Rating:</span>
+      <select id="fRating"><option value="">Todos</option><option>A</option><option>B</option><option>C</option><option>Outros</option><option>Sem Info</option></select></div>
+    <div class="filter-group"><span class="filter-label">Status:</span>
+      <select id="fConv"><option value="">Todos</option><option value="1. Convertido">Convertido</option><option value="2. Nao Convertido">Não Convertido</option></select></div>
+  </div>
+
+  <!-- Janela de conversão -->
+  <div class="window-bar">
+    <span class="window-label">Janela de conversão:</span>
+    <button class="btn-window active" data-w="conv_ever">Ever</button>
+    <button class="btn-window" data-w="conv_1d">≤ 1 dia</button>
+    <button class="btn-window" data-w="conv_2d">≤ 2 dias</button>
+    <button class="btn-window" data-w="conv_3d">≤ 3 dias</button>
+    <button class="btn-window" data-w="conv_5d">≤ 5 dias</button>
+    <button class="btn-window" data-w="conv_7d">≤ 7 dias</button>
+    <span class="window-note">Dias contados a partir da data em que recebeu a D1 (arrived)</span>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi total"><div class="kpi-label">Total Propostas</div><div class="kpi-value" id="kTotal">—</div><div class="kpi-sub">TC Full</div></div>
+    <div class="kpi sem"><div class="kpi-label">Sem Comunicação</div><div class="kpi-value" id="kSem">—</div><div class="kpi-sub" id="kSemPct">—</div></div>
+    <div class="kpi sent"><div class="kpi-label">Enviaram (Sent)</div><div class="kpi-value" id="kSent">—</div><div class="kpi-sub" id="kSentPct">—</div></div>
+    <div class="kpi arrived"><div class="kpi-label">Receberam (Arrived)</div><div class="kpi-value" id="kArrived">—</div><div class="kpi-sub" id="kArrivedPct">—</div></div>
+    <div class="kpi shown"><div class="kpi-label">Viram (Shown)</div><div class="kpi-value" id="kShown">—</div><div class="kpi-sub" id="kShownPct">—</div></div>
+    <div class="kpi open"><div class="kpi-label">Abriram (Open)</div><div class="kpi-value" id="kOpen">—</div><div class="kpi-sub" id="kOpenPct">—</div></div>
+    <div class="kpi conv"><div class="kpi-label">Convertidos <span class="badge-window" id="kConvBadge">Ever</span></div><div class="kpi-value" id="kConv">—</div><div class="kpi-sub" id="kConvPct">—</div></div>
+  </div>
+
+  <!-- Charts linha 1 -->
+  <div class="grid-2">
+    <div class="card">
+      <h3>Funil por Safra — Volume</h3>
+      <div class="sub">Distribuição de propostas por melhor etapa atingida</div>
+      <canvas id="cFunil" height="200"></canvas>
+    </div>
+    <div class="card">
+      <h3>Funil por Safra — %</h3>
+      <div class="sub">% de propostas em cada etapa sobre total da safra</div>
+      <canvas id="cFunilPct" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Tabela resumo por safra -->
+  <div class="card" style="margin-bottom:16px">
+    <h3>Taxas de Conversão por Safra — <span id="tabelaWindowLabel">Ever</span></h3>
+    <div class="sub">Valores exatos para cada janela de conversão</div>
+    <div style="overflow-x:auto">
+      <table id="tabelaRates" style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead style="background:#f0f6fb">
+          <tr>
+            <th style="padding:8px;text-align:left;border-bottom:2px solid #dde">Safra</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">Total Enc.</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">Viram</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">Abriram</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">Conv (janela)</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">% Conv/Total</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">% Conv/Viram</th>
+            <th style="padding:8px;text-align:right;border-bottom:2px solid #dde">% Conv/Abriram</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Charts linha 2 -->
+  <div class="grid-3">
+    <div class="card">
+      <h3>% Conv / Total Encendido <span class="badge-window" id="b1"></span></h3>
+      <div class="sub">Conversões na janela selecionada ÷ total propostas</div>
+      <canvas id="cConvTotal" height="200"></canvas>
+    </div>
+    <div class="card">
+      <h3>% Conv / Que Viram <span class="badge-window" id="b2"></span></h3>
+      <div class="sub">Conversões ÷ propostas que viram (shown ou open) — muda com janela</div>
+      <canvas id="cConvShown" height="200"></canvas>
+    </div>
+    <div class="card">
+      <h3>% Conv / Que Abriram <span class="badge-window" id="b3"></span></h3>
+      <div class="sub">Conversões ÷ propostas que abriram — muda com janela</div>
+      <canvas id="cConvOpen" height="200"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── DADOS ──────────────────────────────────────────────────────────────────
+</script>
+<script src="_d1_data.js"></script>
+<script>
+Chart.register(ChartDataLabels);
+const ETAPAS = ['0. Sem comunicacao','1. Enviou (Sent)','2. Recebeu (Arrived)','3. Viu (Shown)','4. Abriu (Open)'];
+const ETAPA_COLORS = ['#aaa','#8b5cf6','#009ee3','#00b89a','#f0711a'];
+const MONTH_PT = {
+  '2026-01':'Jan/26','2026-02':'Fev/26','2026-03':'Mar/26',
+  '2026-04':'Abr/26','2026-05':'Mai/26','2026-06':'Jun/26',
+  '2026-07':'Jul/26','2026-08':'Ago/26','2026-09':'Set/26',
+  '2026-10':'Out/26','2026-11':'Nov/26','2026-12':'Dez/26',
+};
+const CONV_LABELS = {conv_ever:'Ever',conv_1d:'≤1d',conv_2d:'≤2d',conv_3d:'≤3d',conv_5d:'≤5d',conv_7d:'≤7d'};
+
+let activeWindow = 'conv_ever';
+let charts = {};
+
+function fmt(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return String(n);}
+function pct(a,b){return b?((a/b)*100).toFixed(1)+'%':'—';}
+function fmtPct(a,b){return b?((a/b)*100).toFixed(2)+'%':'—';}
+
+// Popula safras no select
+const safras = [...new Set(DATA.map(d=>d.safra))].sort();
+const fSafra = document.getElementById('fSafra');
+safras.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=MONTH_PT[s]||s;fSafra.appendChild(o);});
+
+function getFiltered(){
+  const s=fSafra.value, e=document.getElementById('fEncen').value,
+        a=document.getElementById('fApp').value, n=document.getElementById('fNise').value,
+        r=document.getElementById('fRating').value, c=document.getElementById('fConv').value;
+  return DATA.filter(d=>
+    (!s||d.safra===s)&&(!e||d.flag_encen===e)&&(!a||d.flag_app_ativo===a)&&
+    (!n||d.nise_tag===n)&&(!r||d.rating_tc===r)&&(!c||d.flag_conv===c)
+  );
+}
+
+function aggBySafra(rows, key='qtd_total'){
+  const m={};
+  rows.forEach(r=>{m[r.safra]=(m[r.safra]||0)+(r[key]||0);});
+  return safras.map(s=>m[s]||0);
+}
+
+function aggBySafraEtapa(rows){
+  const m={};
+  rows.forEach(r=>{
+    if(!m[r.safra])m[r.safra]={};
+    m[r.safra][r.melhor_etapa_funil]=(m[r.safra][r.melhor_etapa_funil]||0)+r.qtd_total;
+  });
+  return m;
+}
+
+function makeBar(id,label,labels,data,color){
+  if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{labels,datasets:[{label,data,backgroundColor:color+'cc',borderRadius:4}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>fmt(v)}}}}
+  });
+}
+function makeLine(id,label,labels,data,color){
+  if(charts[id])charts[id].destroy();
+  Chart.register(ChartDataLabels);
+  charts[id]=new Chart(document.getElementById(id),{
+    type:'line',
+    data:{labels,datasets:[{label,data,borderColor:color,backgroundColor:color+'22',
+      pointRadius:5,tension:.3,fill:true,datalabels:{
+        align:'top',anchor:'end',
+        color:color,font:{size:10,weight:'700'},
+        formatter:v=>v.toFixed(2)+'%'
+      }}]},
+    options:{responsive:true,
+      plugins:{legend:{display:false},datalabels:{display:true}},
+      scales:{y:{ticks:{callback:v=>v.toFixed(1)+'%'},min:0,
+        title:{display:true,text:label}}}}
+  });
+}
+function makeStackedBar(id,datasets,labels){
+  if(charts[id])charts[id].destroy();
+  const dl={display:ctx=>ctx.dataset.data[ctx.dataIndex]>=50000,
+    formatter:v=>fmt(v),color:'#fff',font:{size:10,weight:'700'},
+    anchor:'center',align:'center',clamp:true};
+  const ds2=datasets.map(ds=>({...ds,datalabels:dl}));
+  charts[id]=new Chart(document.getElementById(id),{
+    type:'bar',data:{labels,datasets:ds2},
+    options:{responsive:true,
+      plugins:{legend:{position:'top'},datalabels:{display:true}},
+      scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>fmt(v)}}}}
+  });
+}
+function makeStackedPct(id,datasets,labels){
+  if(charts[id])charts[id].destroy();
+  const dl={display:ctx=>ctx.dataset.data[ctx.dataIndex]>=2,
+    formatter:v=>v.toFixed(1)+'%',color:'#fff',font:{size:10,weight:'700'},
+    anchor:'center',align:'center',clamp:true};
+  const ds2=datasets.map(ds=>({...ds,datalabels:dl}));
+  charts[id]=new Chart(document.getElementById(id),{
+    type:'bar',data:{labels,datasets:ds2},
+    options:{responsive:true,
+      plugins:{legend:{position:'top'},datalabels:{display:true}},
+      scales:{x:{stacked:true},y:{stacked:true,min:0,max:100,ticks:{callback:v=>v+'%'}}}}
+  });
+}
+
+function update(){
+  const rows = getFiltered();
+  const w = activeWindow;
+  const wLabel = CONV_LABELS[w];
+
+  // badge
+  document.querySelectorAll('.badge-window').forEach(b=>b.textContent=wLabel);
+  document.getElementById('kConvBadge').textContent=wLabel;
+
+  // totais globais
+  const total   = rows.reduce((s,r)=>s+r.qtd_total,0);
+  const sem     = rows.filter(r=>r.melhor_etapa_funil==='0. Sem comunicacao').reduce((s,r)=>s+r.qtd_total,0);
+  const sent    = rows.filter(r=>r.melhor_etapa_funil>='1. Enviou').reduce((s,r)=>s+r.qtd_total,0);
+  const arrived = rows.filter(r=>r.melhor_etapa_funil>='2. Recebeu').reduce((s,r)=>s+r.qtd_total,0);
+  const shown   = rows.filter(r=>r.melhor_etapa_funil>='3. Viu').reduce((s,r)=>s+r.qtd_total,0);
+  const open    = rows.filter(r=>r.melhor_etapa_funil==='4. Abriu (Open)').reduce((s,r)=>s+r.qtd_total,0);
+  const conv    = rows.reduce((s,r)=>s+(r[w]||0),0);
+
+  document.getElementById('kTotal').textContent   = fmt(total);
+  document.getElementById('kSem').textContent     = fmt(sem);
+  document.getElementById('kSemPct').textContent  = pct(sem,total);
+  document.getElementById('kSent').textContent    = fmt(sent);
+  document.getElementById('kSentPct').textContent = pct(sent,total)+' de encendidos';
+  document.getElementById('kArrived').textContent    = fmt(arrived);
+  document.getElementById('kArrivedPct').textContent = pct(arrived,total)+' de encendidos';
+  document.getElementById('kShown').textContent    = fmt(shown);
+  document.getElementById('kShownPct').textContent = pct(shown,arrived)+' de arrived';
+  document.getElementById('kOpen').textContent    = fmt(open);
+  document.getElementById('kOpenPct').textContent = pct(open,shown)+' de shown';
+  document.getElementById('kConv').textContent    = fmt(conv);
+  document.getElementById('kConvPct').textContent = pct(conv,total)+' de encendidos';
+
+  // por safra
+  const bySafra = aggBySafraEtapa(rows);
+  const labels  = safras.map(s=>MONTH_PT[s]||s);
+
+  // funil stacked absolute
+  const dsAbs = ETAPAS.map((e,i)=>({
+    label: e.split('. ')[1] || e,
+    data: safras.map(s=>(bySafra[s]&&bySafra[s][e])||0),
+    backgroundColor: ETAPA_COLORS[i]+'cc',
+    stack:'main'
+  }));
+  makeStackedBar('cFunil', dsAbs, labels);
+
+  // funil stacked %
+  const totBySafra = safras.map(s=>Object.values(bySafra[s]||{}).reduce((a,b)=>a+b,0));
+  const dsPct = ETAPAS.map((e,i)=>({
+    label: e.split('. ')[1] || e,
+    data: safras.map((s,si)=>{
+      const t=totBySafra[si];
+      return t?+((((bySafra[s]&&bySafra[s][e])||0)/t)*100).toFixed(2):0;
+    }),
+    backgroundColor: ETAPA_COLORS[i]+'cc',
+    stack:'main'
+  }));
+  makeStackedPct('cFunilPct', dsPct, labels);
+
+  // taxas por safra
+  // numeradores corretos: conv só das propostas dentro de cada grupo de etapa
+  const totalBySafra = aggBySafra(rows, 'qtd_total');
+  const convTotalBySafra = aggBySafra(rows, w);
+  const shownBySafra = safras.map(s=>rows.filter(r=>r.safra===s&&r.melhor_etapa_funil>='3. Viu').reduce((a,b)=>a+b.qtd_total,0));
+  const openBySafra  = safras.map(s=>rows.filter(r=>r.safra===s&&r.melhor_etapa_funil==='4. Abriu (Open)').reduce((a,b)=>a+b.qtd_total,0));
+  // conv dos que viram = conversões entre os que têm etapa >= Viu
+  const convShownBySafra = safras.map(s=>rows.filter(r=>r.safra===s&&r.melhor_etapa_funil>='3. Viu').reduce((a,b)=>a+(b[w]||0),0));
+  // conv dos que abriram = conversões entre os que abriram
+  const convOpenBySafra  = safras.map(s=>rows.filter(r=>r.safra===s&&r.melhor_etapa_funil==='4. Abriu (Open)').reduce((a,b)=>a+(b[w]||0),0));
+
+  const convBySafra = convTotalBySafra; // alias para tabela/KPI
+  const rateTotal = convTotalBySafra.map((c,i)=>totalBySafra[i]?+((c/totalBySafra[i])*100).toFixed(2):0);
+  const rateShown = convShownBySafra.map((c,i)=>shownBySafra[i]?+((c/shownBySafra[i])*100).toFixed(2):0);
+  const rateOpen  = convOpenBySafra.map((c,i)=>openBySafra[i]?+((c/openBySafra[i])*100).toFixed(2):0);
+
+  makeLine('cConvTotal','% Conv/Total',labels,rateTotal,'#6366f1');
+  makeLine('cConvShown','% Conv/Shown',labels,rateShown,'#00b89a');
+  makeLine('cConvOpen', '% Conv/Open', labels,rateOpen, '#f0711a');
+
+  // tabela de valores exatos
+  document.getElementById('tabelaWindowLabel').textContent = wLabel;
+  const tbody = document.getElementById('tabelaBody');
+  tbody.innerHTML = safras.map((s,i)=>{
+    const tot  = totalBySafra[i];
+    const sh   = shownBySafra[i];
+    const op   = openBySafra[i];
+    const cv   = convBySafra[i];
+    const bg   = rateTotal[i] < 5 ? '#fff5f5' : '';
+    return `<tr style="background:${bg}">
+      <td style="padding:7px 8px;font-weight:600">${MONTH_PT[s]||s}</td>
+      <td style="padding:7px 8px;text-align:right">${fmt(tot)}</td>
+      <td style="padding:7px 8px;text-align:right">${fmt(sh)}</td>
+      <td style="padding:7px 8px;text-align:right">${fmt(op)}</td>
+      <td style="padding:7px 8px;text-align:right;font-weight:700">${fmt(cv)}</td>
+      <td style="padding:7px 8px;text-align:right;color:#6366f1;font-weight:700">${fmtPct(cv,tot)}</td>
+      <td style="padding:7px 8px;text-align:right;color:#00b89a;font-weight:700">${fmtPct(cv,sh)}</td>
+      <td style="padding:7px 8px;text-align:right;color:#f0711a;font-weight:700">${fmtPct(cv,op)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// eventos
+document.querySelectorAll('.btn-window').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.btn-window').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    activeWindow=b.dataset.w;
+    update();
+  });
+});
+['fSafra','fEncen','fApp','fNise','fRating','fConv'].forEach(id=>{
+  document.getElementById(id).addEventListener('change',update);
+});
+
+update();
+</script>
+</body>
+</html>
