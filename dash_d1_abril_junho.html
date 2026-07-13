@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funil D1 — Abril vs Junho | CC Aquisicao</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#333}
+header{background:#009ee3;color:#fff;padding:20px 32px}
+header h1{font-size:1.35rem;font-weight:700}
+header p{font-size:.82rem;opacity:.85;margin-top:4px}
+.container{max-width:1300px;margin:0 auto;padding:24px 32px}
+.filter-bar{background:#fff;border-radius:12px;padding:16px 22px;margin-bottom:22px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-bar label{font-weight:600;font-size:.88rem;color:#555;white-space:nowrap}
+.filter-bar select{padding:8px 14px;border:1.5px solid #ddd;border-radius:8px;
+  font-size:.9rem;min-width:150px;cursor:pointer;outline:none;background:#fff}
+.filter-bar select:focus{border-color:#009ee3}
+.sep{width:1px;height:28px;background:#e5e7eb;margin:0 4px}
+
+.funnel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
+.funnel-card{background:#fff;border-radius:12px;padding:24px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.funnel-card h2{font-size:1.1rem;font-weight:700;text-align:center;margin-bottom:18px;
+  padding-bottom:12px;border-bottom:2px solid #f3f4f6}
+.f-apr h2{color:#009ee3}
+.f-jun h2{color:#f0711a}
+
+.funnel-step{margin-bottom:16px}
+.step-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.step-label{font-size:.78rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em}
+.step-nums{text-align:right}
+.step-count{font-size:1rem;font-weight:800;color:#111}
+.step-pct{font-size:.75rem;color:#aaa;display:block;margin-top:1px}
+.bar-track{height:12px;background:#f3f4f6;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;transition:width .5s ease}
+.b-enc  {background:#9ca3af}
+.b-sent {background:#8b5cf6}
+.b-arr  {background:#009ee3}
+.b-shown{background:#00b89a}
+.b-open {background:#f59e0b}
+.b-conv {background:#10b981}
+.step-divider{height:8px}
+
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-card{background:#fff;border-radius:12px;padding:14px 12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center}
+.kpi-label{font-size:.68rem;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.kpi-vals{display:flex;justify-content:space-around;align-items:center}
+.kpi-v{text-align:center}
+.kpi-v .num{font-size:1.05rem;font-weight:800}
+.kpi-v .sub{font-size:.65rem;color:#bbb;margin-top:1px}
+.kpi-apr .num{color:#009ee3}
+.kpi-jun .num{color:#f0711a}
+.kpi-delta{font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:10px}
+.d-up{background:#d1fae5;color:#065f46}
+.d-dn{background:#fee2e2;color:#991b1b}
+.d-eq{background:#f3f4f6;color:#6b7280}
+
+.chart-section{background:#fff;border-radius:12px;padding:20px 22px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:22px}
+.chart-section h3{font-size:.88rem;font-weight:700;color:#555;margin-bottom:16px}
+.chart-md{position:relative;height:260px}
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
+
+@media(max-width:900px){
+  .funnel-wrap,.kpi-row,.charts-2col{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Funil D1 — Comparativo Abril vs Junho</h1>
+  <p>Encendido → Sent → Arrived → Shown → Open → Conversao | Atualizado: 13/07/2026 15:30</p>
+</header>
+<div class="container">
+
+<div class="filter-bar">
+  <label>Campanha D1:</label>
+  <select id="selCampaign" onchange="render()">
+    <option value="">D1 FULL + MICRO</option>
+    <option value="D1 FULL">D1 FULL</option>
+    <option value="D1 MICRO">D1 MICRO</option>
+  </select>
+  <div class="sep"></div>
+  <label>Segmento:</label>
+  <select id="selSeg" onchange="render()">
+    <option value="">Todos</option>
+    <option value="BAU">BAU</option>
+    <option value="SELLER">SELLER</option>
+    <option value="MICRO">MICRO</option>
+    <option value="Grupo Cortado">Grupo Cortado</option>
+    <option value="Users Ecossist">Users Ecossist</option>
+    <option value="Users Ecossist Cortado">Users Ecossist Cortado</option>
+  </select>
+  <div class="sep"></div>
+  <label>Tipo TC:</label>
+  <select id="selTc" onchange="render()">
+    <option value="">Todos</option>
+    <option value="1. TC Full">TC Full</option>
+    <option value="2. Micro TC">Micro TC</option>
+  </select>
+  <div class="sep"></div>
+  <label>App Ativo:</label>
+  <select id="selApp" onchange="render()">
+    <option value="">Todos</option>
+    <option value="1. MP">1. MP</option>
+    <option value="2. MP y ML">2. MP y ML</option>
+    <option value="3. ML">3. ML</option>
+    <option value="4. Sem App Ativo">4. Sem App Ativo</option>
+  </select>
+  <div class="sep"></div>
+  <label>EA-MP:</label>
+  <select id="selEa" onchange="render()">
+    <option value="">Todos</option>
+    <option value="COM EA">Com EA</option>
+    <option value="SEM EA">Sem EA</option>
+  </select>
+</div>
+
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="funnel-wrap">
+  <div class="funnel-card f-apr" id="funnelAbr"></div>
+  <div class="funnel-card f-jun" id="funnelJun"></div>
+</div>
+
+<div class="charts-2col">
+  <div class="chart-section">
+    <h3>Taxas sobre Encendido (%)</h3>
+    <div class="chart-md"><canvas id="rateChart"></canvas></div>
+  </div>
+  <div class="chart-section">
+    <h3>Taxas sobre Shown (%) — Open e Conversao</h3>
+    <div class="chart-md"><canvas id="convChart"></canvas></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const DATA = [
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 227437, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 227437, qtd_sent: 13404, qtd_arrived: 10225, qtd_shown: 6707, qtd_open: 99, qtd_conv_shown: 215, qtd_conv_open: 20 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 2021221, qtd_sent: 18, qtd_arrived: 18, qtd_shown: 15, qtd_open: 1, qtd_conv_shown: 15, qtd_conv_open: 1 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 2021221, qtd_sent: 807416, qtd_arrived: 679459, qtd_shown: 559930, qtd_open: 13032, qtd_conv_shown: 25976, qtd_conv_open: 2411 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 6428651, qtd_sent: 12, qtd_arrived: 10, qtd_shown: 10, qtd_open: 0, qtd_conv_shown: 10, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 6428651, qtd_sent: 4334874, qtd_arrived: 3516039, qtd_shown: 2764610, qtd_open: 43398, qtd_conv_shown: 48672, qtd_conv_open: 3125 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 809372, qtd_sent: 111403, qtd_arrived: 83395, qtd_shown: 56805, qtd_open: 876, qtd_conv_shown: 964, qtd_conv_open: 91 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 17243, qtd_sent: 1836, qtd_arrived: 1382, qtd_shown: 886, qtd_open: 23, qtd_conv_shown: 46, qtd_conv_open: 4 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 107842, qtd_sent: 2, qtd_arrived: 1, qtd_shown: 1, qtd_open: 0, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 107842, qtd_sent: 60331, qtd_arrived: 49110, qtd_shown: 39545, qtd_open: 1306, qtd_conv_shown: 3562, qtd_conv_open: 414 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 677751, qtd_sent: 3, qtd_arrived: 3, qtd_shown: 3, qtd_open: 0, qtd_conv_shown: 3, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 677751, qtd_sent: 436728, qtd_arrived: 338665, qtd_shown: 261021, qtd_open: 5475, qtd_conv_shown: 8876, qtd_conv_open: 869 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 145457, qtd_sent: 20012, qtd_arrived: 14665, qtd_shown: 10053, qtd_open: 218, qtd_conv_shown: 243, qtd_conv_open: 28 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 52885, qtd_sent: 70, qtd_arrived: 50, qtd_shown: 33, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 311610, qtd_sent: 1784, qtd_arrived: 1487, qtd_shown: 1176, qtd_open: 27, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 743025, qtd_sent: 1467, qtd_arrived: 1206, qtd_shown: 878, qtd_open: 15, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 148361, qtd_sent: 100, qtd_arrived: 70, qtd_shown: 51, qtd_open: 1, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 99083, qtd_sent: 1, qtd_arrived: 0, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 99083, qtd_sent: 2096, qtd_arrived: 1433, qtd_shown: 891, qtd_open: 10, qtd_conv_shown: 41, qtd_conv_open: 1 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 314961, qtd_sent: 7, qtd_arrived: 5, qtd_shown: 4, qtd_open: 0, qtd_conv_shown: 4, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 314961, qtd_sent: 45317, qtd_arrived: 35454, qtd_shown: 28911, qtd_open: 674, qtd_conv_shown: 1836, qtd_conv_open: 149 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 17374, qtd_sent: 9556, qtd_arrived: 7479, qtd_shown: 6182, qtd_open: 105, qtd_conv_shown: 308, qtd_conv_open: 17 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 12788, qtd_sent: 911, qtd_arrived: 643, qtd_shown: 468, qtd_open: 4, qtd_conv_shown: 15, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 30972, qtd_sent: 17, qtd_arrived: 10, qtd_shown: 4, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 49012, qtd_sent: 66, qtd_arrived: 52, qtd_shown: 37, qtd_open: 1, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 3108, qtd_sent: 10, qtd_arrived: 8, qtd_shown: 6, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 3360, qtd_sent: 3, qtd_arrived: 0, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 2482, qtd_sent: 512, qtd_arrived: 387, qtd_shown: 226, qtd_open: 6, qtd_conv_shown: 8, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 4161, qtd_sent: 2938, qtd_arrived: 2320, qtd_shown: 1532, qtd_open: 39, qtd_conv_shown: 65, qtd_conv_open: 3 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 59554, qtd_sent: 41258, qtd_arrived: 32166, qtd_shown: 19490, qtd_open: 392, qtd_conv_shown: 276, qtd_conv_open: 30 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 56024, qtd_sent: 8822, qtd_arrived: 6578, qtd_shown: 4009, qtd_open: 89, qtd_conv_shown: 71, qtd_conv_open: 4 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 18901, qtd_sent: 4047, qtd_arrived: 2985, qtd_shown: 1790, qtd_open: 44, qtd_conv_shown: 127, qtd_conv_open: 18 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 34012, qtd_sent: 24439, qtd_arrived: 19015, qtd_shown: 12478, qtd_open: 446, qtd_conv_shown: 1011, qtd_conv_open: 132 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 322778, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 322778, qtd_sent: 241837, qtd_arrived: 186143, qtd_shown: 114213, qtd_open: 2955, qtd_conv_shown: 3071, qtd_conv_open: 425 },
+    { anomes_encendido: "202604", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 84154, qtd_sent: 47044, qtd_arrived: 34747, qtd_shown: 21194, qtd_open: 512, qtd_conv_shown: 663, qtd_conv_open: 112 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 227437, qtd_sent: 66, qtd_arrived: 50, qtd_shown: 32, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 2021221, qtd_sent: 1504, qtd_arrived: 1212, qtd_shown: 931, qtd_open: 17, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 6428651, qtd_sent: 1285, qtd_arrived: 1070, qtd_shown: 799, qtd_open: 6, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 809372, qtd_sent: 92, qtd_arrived: 62, qtd_shown: 38, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 17243, qtd_sent: 33, qtd_arrived: 18, qtd_shown: 12, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 107842, qtd_sent: 1237, qtd_arrived: 1025, qtd_shown: 786, qtd_open: 15, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 677751, qtd_sent: 1053, qtd_arrived: 826, qtd_shown: 593, qtd_open: 13, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 145457, qtd_sent: 67, qtd_arrived: 48, qtd_shown: 39, qtd_open: 1, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 52885, qtd_sent: 3139, qtd_arrived: 2383, qtd_shown: 1564, qtd_open: 56, qtd_conv_shown: 110, qtd_conv_open: 20 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 311610, qtd_sent: 7, qtd_arrived: 6, qtd_shown: 6, qtd_open: 1, qtd_conv_shown: 6, qtd_conv_open: 1 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 311610, qtd_sent: 108191, qtd_arrived: 89492, qtd_shown: 72276, qtd_open: 3549, qtd_conv_shown: 6580, qtd_conv_open: 1012 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 743025, qtd_sent: 7, qtd_arrived: 7, qtd_shown: 5, qtd_open: 0, qtd_conv_shown: 5, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 743025, qtd_sent: 511440, qtd_arrived: 406242, qtd_shown: 311487, qtd_open: 9148, qtd_conv_shown: 13023, qtd_conv_open: 1695 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 148361, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 148361, qtd_sent: 22517, qtd_arrived: 16404, qtd_shown: 11231, qtd_open: 334, qtd_conv_shown: 476, qtd_conv_open: 75 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 99083, qtd_sent: 8, qtd_arrived: 6, qtd_shown: 2, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 314961, qtd_sent: 76, qtd_arrived: 70, qtd_shown: 41, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 17374, qtd_sent: 12, qtd_arrived: 9, qtd_shown: 2, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 12788, qtd_sent: 3, qtd_arrived: 2, qtd_shown: 2, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 30972, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 0, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 30972, qtd_sent: 768, qtd_arrived: 540, qtd_shown: 352, qtd_open: 16, qtd_conv_shown: 27, qtd_conv_open: 4 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 49012, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 1, qtd_conv_shown: 1, qtd_conv_open: 1 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 49012, qtd_sent: 7838, qtd_arrived: 5877, qtd_shown: 4504, qtd_open: 241, qtd_conv_shown: 744, qtd_conv_open: 115 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 3108, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 1, qtd_conv_shown: 1, qtd_conv_open: 1 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 3108, qtd_sent: 1562, qtd_arrived: 1159, qtd_shown: 911, qtd_open: 39, qtd_conv_shown: 111, qtd_conv_open: 15 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis! | Peça agora mesmo, anuidade grátis e muitos outros benefícios. Vem saber mais!", qtd_total_encendido: 3360, qtd_sent: 234, qtd_arrived: 156, qtd_shown: 105, qtd_open: 5, qtd_conv_shown: 10, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 2482, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 4161, qtd_sent: 2, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 18901, qtd_sent: 9, qtd_arrived: 6, qtd_shown: 4, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 34012, qtd_sent: 34, qtd_arrived: 31, qtd_shown: 23, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 322778, qtd_sent: 35, qtd_arrived: 27, qtd_shown: 21, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202604", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 84154, qtd_sent: 10, qtd_arrived: 8, qtd_shown: 8, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 209394, qtd_sent: 1969, qtd_arrived: 1140, qtd_shown: 925, qtd_open: 24, qtd_conv_shown: 14, qtd_conv_open: 2 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 1773706, qtd_sent: 3, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 1773706, qtd_sent: 132004, qtd_arrived: 87423, qtd_shown: 74455, qtd_open: 1615, qtd_conv_shown: 2100, qtd_conv_open: 256 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 6054621, qtd_sent: 5, qtd_arrived: 4, qtd_shown: 4, qtd_open: 0, qtd_conv_shown: 4, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 6054621, qtd_sent: 3488766, qtd_arrived: 2732417, qtd_shown: 2114664, qtd_open: 28006, qtd_conv_shown: 21742, qtd_conv_open: 1161 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 809559, qtd_sent: 1, qtd_arrived: 0, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 809559, qtd_sent: 122525, qtd_arrived: 86125, qtd_shown: 59327, qtd_open: 1041, qtd_conv_shown: 598, qtd_conv_open: 69 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 519, qtd_sent: 7, qtd_arrived: 4, qtd_shown: 2, qtd_open: 0, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 308, qtd_sent: 56, qtd_arrived: 35, qtd_shown: 21, qtd_open: 2, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Grupo Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 372, qtd_sent: 26, qtd_arrived: 21, qtd_shown: 15, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 329752, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 882057, qtd_sent: 10, qtd_arrived: 8, qtd_shown: 7, qtd_open: 1, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 160826, qtd_sent: 5, qtd_arrived: 6, qtd_shown: 5, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 86431, qtd_sent: 89, qtd_arrived: 35, qtd_shown: 29, qtd_open: 1, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 275802, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 0, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 275802, qtd_sent: 2871, qtd_arrived: 1734, qtd_shown: 1525, qtd_open: 20, qtd_conv_shown: 46, qtd_conv_open: 1 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 15764, qtd_sent: 1304, qtd_arrived: 846, qtd_shown: 691, qtd_open: 8, qtd_conv_shown: 14, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 11449, qtd_sent: 85, qtd_arrived: 52, qtd_shown: 44, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 36461, qtd_sent: 0, qtd_arrived: 1, qtd_shown: 0, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 1714, qtd_sent: 24, qtd_arrived: 17, qtd_shown: 10, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 2674, qtd_sent: 184, qtd_arrived: 117, qtd_shown: 77, qtd_open: 4, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 48579, qtd_sent: 26389, qtd_arrived: 18510, qtd_shown: 10887, qtd_open: 108, qtd_conv_shown: 99, qtd_conv_open: 6 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Users Ecossist", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 180686, qtd_sent: 7874, qtd_arrived: 5440, qtd_shown: 3198, qtd_open: 55, qtd_conv_shown: 35, qtd_conv_open: 4 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "1. MP", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 13167, qtd_sent: 167, qtd_arrived: 114, qtd_shown: 66, qtd_open: 1, qtd_conv_shown: 4, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 23893, qtd_sent: 1529, qtd_arrived: 1055, qtd_shown: 732, qtd_open: 30, qtd_conv_shown: 44, qtd_conv_open: 9 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 283125, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 0, qtd_conv_shown: 1, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 283125, qtd_sent: 169664, qtd_arrived: 124779, qtd_shown: 75774, qtd_open: 1036, qtd_conv_shown: 1111, qtd_conv_open: 119 },
+    { anomes_encendido: "202606", campaign: "D1 FULL", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "Users Ecossist Cortado", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Parcele em até 18x sem juros no Mercado Livre com anuidade grátis, de verdade. Peça já!", qtd_total_encendido: 127862, qtd_sent: 43102, qtd_arrived: 29972, qtd_shown: 17925, qtd_open: 276, qtd_conv_shown: 336, qtd_conv_open: 52 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 1773706, qtd_sent: 6, qtd_arrived: 5, qtd_shown: 3, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 6054621, qtd_sent: 9, qtd_arrived: 5, qtd_shown: 5, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "1. TC Full", segmento: "BAU", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 809559, qtd_sent: 6, qtd_arrived: 4, qtd_shown: 3, qtd_open: 0, qtd_conv_shown: 0, qtd_conv_open: 0 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 60883, qtd_sent: 372, qtd_arrived: 218, qtd_shown: 168, qtd_open: 8, qtd_conv_shown: 18, qtd_conv_open: 2 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "COM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 329752, qtd_sent: 1, qtd_arrived: 1, qtd_shown: 1, qtd_open: 1, qtd_conv_shown: 1, qtd_conv_open: 1 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 329752, qtd_sent: 16773, qtd_arrived: 11287, qtd_shown: 9474, qtd_open: 429, qtd_conv_shown: 803, qtd_conv_open: 138 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 882057, qtd_sent: 507697, qtd_arrived: 382101, qtd_shown: 292227, qtd_open: 6275, qtd_conv_shown: 9672, qtd_conv_open: 1036 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "MICRO", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 160826, qtd_sent: 27244, qtd_arrived: 17649, qtd_shown: 12385, qtd_open: 336, qtd_conv_shown: 417, qtd_conv_open: 71 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "1. MP", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 36461, qtd_sent: 69, qtd_arrived: 25, qtd_shown: 23, qtd_open: 1, qtd_conv_shown: 1, qtd_conv_open: 1 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "2. MP y ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 57140, qtd_sent: 888, qtd_arrived: 478, qtd_shown: 411, qtd_open: 20, qtd_conv_shown: 42, qtd_conv_open: 9 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "3. ML", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 6314, qtd_sent: 972, qtd_arrived: 569, qtd_shown: 436, qtd_open: 13, qtd_conv_shown: 26, qtd_conv_open: 3 },
+    { anomes_encendido: "202606", campaign: "D1 MICRO", flag_app_ativo: "4. Sem App Ativo", flag_tc: "2. Micro TC", segmento: "SELLER", flag_ea: "SEM EA", titulos: "Seu cartão de Crédito chegou 💳", corpos: "Anuidade zero e limite que cresce com você. Peça agora mesmo, é grátis!", qtd_total_encendido: 6652, qtd_sent: 178, qtd_arrived: 103, qtd_shown: 82, qtd_open: 5, qtd_conv_shown: 4, qtd_conv_open: 2 }
+];
+
+const fmt  = n => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : String(n);
+const fmtN = n => n.toLocaleString('pt-BR');
+const pctN = (a, b) => b > 0 ? (a/b)*100 : 0;
+
+function filter() {
+  const camp = document.getElementById('selCampaign').value;
+  const seg  = document.getElementById('selSeg').value;
+  const tc   = document.getElementById('selTc').value;
+  const app  = document.getElementById('selApp').value;
+  const ea   = document.getElementById('selEa').value;
+  return DATA.filter(d =>
+    (!camp || d.campaign === camp) &&
+    (!seg  || d.segmento === seg)  &&
+    (!tc   || d.flag_tc === tc)    &&
+    (!app  || d.flag_app_ativo === app) &&
+    (!ea   || d.flag_ea === ea)
+  );
+}
+
+function aggRows(rows) {
+  const o = { sent:0, arr:0, shown:0, open:0, conv:0 };
+  rows.forEach(d => {
+    o.sent  += d.qtd_sent;
+    o.arr   += d.qtd_arrived;
+    o.shown += d.qtd_shown;
+    o.open  += d.qtd_open;
+    o.conv  += d.qtd_conv_shown;
+  });
+  return o;
+}
+
+function aggEnc(rows) {
+  const map = {};
+  rows.forEach(d => {
+    const k = `${d.flag_app_ativo}|${d.flag_tc}|${d.segmento}`;
+    if (!map[k]) map[k] = d.qtd_total_encendido;
+  });
+  return Object.values(map).reduce((s,v) => s+v, 0);
+}
+
+function buildFunnel(el, title, enc, a, colorClass) {
+  const steps = [
+    { lbl:'🔥 Encendido', val:enc,    w:100,                   sub:'base', cls:'b-enc'  },
+    { lbl:'📤 Sent',      val:a.sent,  w:pctN(a.sent, enc),     sub:`${pctN(a.sent,enc).toFixed(1)}% de enc`, cls:'b-sent'  },
+    { lbl:'📬 Arrived',   val:a.arr,   w:pctN(a.arr,  enc),     sub:`${pctN(a.arr,enc).toFixed(1)}% de enc`,  cls:'b-arr'   },
+    { lbl:'👀 Shown',     val:a.shown, w:pctN(a.shown,enc),     sub:`${pctN(a.shown,enc).toFixed(1)}% de enc`,cls:'b-shown' },
+    { lbl:'👆 Open',      val:a.open,  w:pctN(a.open, a.shown), sub:`${pctN(a.open,a.shown).toFixed(1)}% de shown`, cls:'b-open' },
+    { lbl:'✅ Convertido', val:a.conv,  w:pctN(a.conv, a.shown), sub:`${pctN(a.conv,a.shown).toFixed(1)}% de shown`, cls:'b-conv' },
+  ];
+  let html = `<h2>${title}</h2>`;
+  steps.forEach(s => {
+    const barW = Math.max(1.5, Math.min(100, s.w));
+    html += `<div class="funnel-step">
+      <div class="step-header">
+        <span class="step-label">${s.lbl}</span>
+        <span class="step-nums">
+          <span class="step-count">${fmtN(s.val)}</span>
+          <span class="step-pct">${s.sub}</span>
+        </span>
+      </div>
+      <div class="bar-track"><div class="bar-fill ${s.cls}" style="width:${barW}%"></div></div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function buildKPIs(aA, eA, aJ, eJ) {
+  const metrics = [
+    { lbl:'% Sent / Enc',    vA:pctN(aA.sent,eA),    vJ:pctN(aJ.sent,eJ)    },
+    { lbl:'% Arrived / Enc', vA:pctN(aA.arr,eA),     vJ:pctN(aJ.arr,eJ)     },
+    { lbl:'% Shown / Enc',   vA:pctN(aA.shown,eA),   vJ:pctN(aJ.shown,eJ)   },
+    { lbl:'% Open / Shown',  vA:pctN(aA.open,aA.shown), vJ:pctN(aJ.open,aJ.shown) },
+    { lbl:'% Conv / Shown',  vA:pctN(aA.conv,aA.shown), vJ:pctN(aJ.conv,aJ.shown) },
+  ];
+  document.getElementById('kpiRow').innerHTML = metrics.map(m => {
+    const diff = m.vJ - m.vA;
+    const cls  = diff > 0.05 ? 'd-up' : diff < -0.05 ? 'd-dn' : 'd-eq';
+    const sign = diff > 0 ? '+' : '';
+    return `<div class="kpi-card">
+      <div class="kpi-label">${m.lbl}</div>
+      <div class="kpi-vals">
+        <div class="kpi-v kpi-apr"><div class="num">${m.vA.toFixed(1)}%</div><div class="sub">Abril</div></div>
+        <span class="kpi-delta ${cls}">${sign}${diff.toFixed(1)}pp</span>
+        <div class="kpi-v kpi-jun"><div class="num">${m.vJ.toFixed(1)}%</div><div class="sub">Junho</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let charts = {};
+function mkChart(id, labels, dsA, dsJ, suffix) {
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'Abril 2026', data:dsA, backgroundColor:'#009ee3', borderRadius:5 },
+        { label:'Junho 2026', data:dsJ, backgroundColor:'#f0711a', borderRadius:5 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top'},
+        tooltip:{ callbacks:{ label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(1)}${suffix}` }}},
+      scales:{ y:{ ticks:{ callback: v => v+suffix }, grid:{ color:'#f3f4f6' } } }
+    }
+  });
+}
+
+function render() {
+  const all  = filter();
+  const rowA = all.filter(d => d.anomes_encendido === '202604');
+  const rowJ = all.filter(d => d.anomes_encendido === '202606');
+  const eA = aggEnc(rowA), eJ = aggEnc(rowJ);
+  const aA = aggRows(rowA), aJ = aggRows(rowJ);
+
+  buildFunnel(document.getElementById('funnelAbr'), 'Abril 2026', eA, aA);
+  buildFunnel(document.getElementById('funnelJun'), 'Junho 2026', eJ, aJ);
+  buildKPIs(aA, eA, aJ, eJ);
+
+  mkChart('rateChart',
+    ['% Sent', '% Arrived', '% Shown'],
+    [pctN(aA.sent,eA), pctN(aA.arr,eA), pctN(aA.shown,eA)],
+    [pctN(aJ.sent,eJ), pctN(aJ.arr,eJ), pctN(aJ.shown,eJ)], '%');
+
+  mkChart('convChart',
+    ['% Open / Shown', '% Conv / Shown'],
+    [pctN(aA.open,aA.shown), pctN(aA.conv,aA.shown)],
+    [pctN(aJ.open,aJ.shown), pctN(aJ.conv,aJ.shown)], '%');
+}
+
+render();
+</script>
+</body>
+</html>
