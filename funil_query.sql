@@ -199,6 +199,29 @@ total_enc AS (
   FROM proposal_segmentada
   WHERE DT_ENCENDIDO >= '2026-01-01'
   GROUP BY 1, 2, 3, 4
+),
+
+-- Funil agregado across todas as campanhas (dedup por cust_id) por bucket + EA
+total_funnel AS (
+  SELECT
+    CAST(prop.DT_ENCENDIDO AS STRING FORMAT 'YYYYMM') AS anomes_encendido,
+    prop.FLAG_APP_ATIVO,
+    prop.FLAG_TC,
+    prop.segmento,
+    prop.flag_ea,
+    COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END) AS qtd_sent_any,
+    COUNT(DISTINCT CASE WHEN c.fl_arrived THEN prop.ccard_prop_id END) AS qtd_arrived_any,
+    COUNT(DISTINCT CASE WHEN c.fl_shown   THEN prop.ccard_prop_id END) AS qtd_shown_any,
+    COUNT(DISTINCT CASE WHEN c.fl_open    THEN prop.ccard_prop_id END) AS qtd_open_any,
+    COUNT(DISTINCT CASE WHEN c.fl_open AND prop.FLAG_CONVERSAO = '1. Convertido'
+          THEN prop.ccard_prop_id END)                                 AS qtd_conv_open_any
+  FROM proposal_segmentada prop
+  LEFT JOIN comunic c
+    ON  prop.cus_cust_id = c.cus_cust_id
+    AND c.sent_date BETWEEN prop.DT_ENCENDIDO
+                        AND CASE WHEN prop.ccard_prop_status <> 'pending' THEN prop.DT_CONV ELSE CURRENT_DATE END
+  WHERE prop.DT_ENCENDIDO >= '2026-01-01'
+  GROUP BY 1, 2, 3, 4, 5
 )
 
 SELECT
@@ -212,12 +235,17 @@ SELECT
     STRING_AGG(DISTINCT c.NOTIFICATION_TEXT_DESC,  ' | ' ORDER BY c.NOTIFICATION_TEXT_DESC)  AS corpos,
     ANY_VALUE(te.qtd_total_encendido)                                                         AS qtd_total_encendido,
     COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END)                        AS qtd_sent,
-    COUNT(DISTINCT CASE WHEN c.fl_sent    THEN prop.ccard_prop_id END)                        AS qtd_sent,
     COUNT(DISTINCT CASE WHEN c.fl_arrived THEN prop.ccard_prop_id END)                        AS qtd_arrived,
     COUNT(DISTINCT CASE WHEN c.fl_shown   THEN prop.ccard_prop_id END)                        AS qtd_shown,
     COUNT(DISTINCT CASE WHEN c.fl_open    THEN prop.ccard_prop_id END)                        AS qtd_open,
     COUNT(DISTINCT CASE WHEN c.fl_shown AND prop.FLAG_CONVERSAO = '1. Convertido' THEN prop.ccard_prop_id END) AS qtd_conv_shown,
-    COUNT(DISTINCT CASE WHEN c.fl_open  AND prop.FLAG_CONVERSAO = '1. Convertido' THEN prop.ccard_prop_id END) AS qtd_conv_open
+    COUNT(DISTINCT CASE WHEN c.fl_open  AND prop.FLAG_CONVERSAO = '1. Convertido' THEN prop.ccard_prop_id END) AS qtd_conv_open,
+    -- funil dedup across todas as campanhas (para visão agregada)
+    ANY_VALUE(tf.qtd_sent_any)      AS qtd_sent_any,
+    ANY_VALUE(tf.qtd_arrived_any)   AS qtd_arrived_any,
+    ANY_VALUE(tf.qtd_shown_any)     AS qtd_shown_any,
+    ANY_VALUE(tf.qtd_open_any)      AS qtd_open_any,
+    ANY_VALUE(tf.qtd_conv_open_any) AS qtd_conv_open_any
 FROM proposal_segmentada prop
 LEFT JOIN comunic c
     ON  prop.cus_cust_id = c.cus_cust_id
@@ -228,6 +256,12 @@ LEFT JOIN total_enc te
     AND prop.FLAG_APP_ATIVO = te.FLAG_APP_ATIVO
     AND prop.FLAG_TC        = te.FLAG_TC
     AND prop.segmento       = te.segmento
+LEFT JOIN total_funnel tf
+    ON  CAST(prop.DT_ENCENDIDO AS STRING FORMAT 'YYYYMM') = tf.anomes_encendido
+    AND prop.FLAG_APP_ATIVO = tf.FLAG_APP_ATIVO
+    AND prop.FLAG_TC        = tf.FLAG_TC
+    AND prop.segmento       = tf.segmento
+    AND prop.flag_ea        = tf.flag_ea
 WHERE prop.DT_ENCENDIDO >= '2026-01-01'
 GROUP BY
     CAST(prop.DT_ENCENDIDO AS STRING FORMAT 'YYYYMM'),
