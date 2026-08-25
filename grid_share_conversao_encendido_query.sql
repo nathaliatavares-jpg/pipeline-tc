@@ -1,0 +1,170 @@
+-- Aba 2 do grid de share de conversão: cohort por MÊS DO ENCENDIDO (CCARD_PROP_CREATION_DT),
+-- não por mês de conversão. Só propostas ACEITAS (convertidas). Se encendeu em janeiro e
+-- converteu em março, conta em janeiro.
+--
+-- EA: NÃO usa mais o join por dia exato com a tabela raw de congrats (o campo
+-- CCARD_PROP_UPDATE_DT atrasa cada vez mais em relação ao DT_CONGRATS real do EA — a partir
+-- de março o atraso já passa de 40-85 dias — então o join por dia exato deixava de casar quase
+-- toda proposta EA a partir de março, e ela caía errado em PRODUTOS). Em vez disso, usa a
+-- mesma junção validada em funil_encendidos_v3_conversao_query.sql: LEFT JOIN na tabela
+-- _AJUSTADA (que já vem com PLACEMENT='EA' normalizado, sem MP/ML misturado com dígito) por
+-- CUS_CUST_ID + mês do aceite. Essa detecção de EA tem prioridade sobre a classificação por
+-- placement das demais categorias (AUTOMATIZADA/MKT/PRODUTOS).
+--
+-- Demais categorias (AUTOMATIZADA/MKT/PRODUTOS/FLAG_TIPO): join pelo DIA EXATO de aceite na
+-- tabela raw de congrats — evita puxar placement de outra proposta do mesmo cliente.
+--
+-- Saída em grão de dia-pós-encendido (dias_conv, capado em 120) pra permitir um filtro
+-- interativo de "considerar conversão até X dias" no dashboard, sem precisar rodar de novo.
+
+WITH
+
+congrats_ea AS (
+  SELECT DISTINCT
+    SAFE_CAST(CUS_CUST_ID AS INT64) AS cus_cust_id,
+    DATE_TRUNC(dt_aceite, MONTH) AS mes_aceite,
+    CASE WHEN BU = 'mercadopago' THEN 'MP' WHEN BU = 'mercadolibre' THEN 'ML' ELSE 'OUTRO' END AS bu_ea
+  FROM `meli-bi-data.SBOX_CREDITSTC.0_AUT_TBL_CONGRATS_ADQ_MLB_TOTAL_AJUSTADA`
+  WHERE UPPER(PLACEMENT) = 'EA'
+),
+
+congrats_raw0 AS (
+  SELECT
+    CUS_CUST_ID AS cus_cust_id,
+    CAST(DT_CONGRATS AS DATE) AS dt_congrats,
+    CASE
+      WHEN BU = 'mercadopago' THEN 'MP'
+      WHEN BU = 'mercadolibre' THEN 'ML'
+      ELSE 'OUTRO'
+    END AS BU_NORM,
+    CASE
+      WHEN PLACEMENT IN (
+        'PUSH_ML_ENCENDIDO_D1', 'WAITLIST_APPROVED_PUSH', 'PUSH_ML_D10', 'WAITLIST_APPROVED_HERMES',
+        'EMAIL_MP_ENCENDIDO', 'PUSH_ML_DROPFLUXO', 'BARRIDA_PENDING_ML_MELIMAS', 'PUSH_ML_CHECKOUT',
+        'EMAIL_ML_PD_ENCENDIDO', 'PUSH_ML_UPSELL', 'PUSH_FLOWS_ENC_ENG', 'PUSH_FLOWS_ENC_ACT',
+        'PUSH_FLOW_NEW_ENG_MELIMAS', 'BARRIDA_PENDING_ML', 'EMAIL_MP_(071124)', 'CREDIT_CARD_PUSHES_FLOWS',
+        'WHATSAPP_TESTE_JUNHO_ML', 'EMAIL_ML_ENCENDIDO', 'TESTE_MAIO_WHATSAPP', 'PUSH', 'EMAIL_FULLL',
+        'TESTE_PUSH_LIMITE_ML', 'EMAIL_TESTE_JUNHO_ML', 'PUSH_ML_MICRO_D6', 'PUSH_MP_MAON', 'PUSH_MAON_ML',
+        'EMAIL_MICRO', 'PUSH_FLOWS_UPSELL_ENG', 'BARRIDA_PENDING_ML_MICRO', 'CARDS_LISTING_RESTYLING_MICRO_TC',
+        'CARDS_LISTING_RESTYLING_FULL_TC', 'PUSH_ML_ENCENDIDO_D1_MICRO', 'EMAIL_D1_MICRO', 'SMART'
+      )
+      THEN 'AUTOMATIZADA'
+      WHEN UPPER(PLACEMENT) LIKE '%FLOW%' THEN 'AUTOMATIZADA'
+      WHEN (PLACEMENT LIKE '%0%' OR PLACEMENT LIKE '%1%' OR PLACEMENT LIKE '%3%' OR PLACEMENT LIKE '%5%' OR PLACEMENT LIKE '%7%') THEN 'MKT'
+      ELSE 'PRODUTOS'
+    END AS FLAG_TIPO_CANAL_RAW0,
+    CASE
+      WHEN UPPER(PLACEMENT) LIKE '%VIP%' OR UPPER(PLACEMENT) LIKE '%PDP%' THEN 'VIP+BOTTOM SHEET'
+      WHEN UPPER(PLACEMENT) LIKE '%MAIL%' THEN 'EMAIL'
+      WHEN UPPER(PLACEMENT) LIKE '%PUSH%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%HERMES%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%ELD%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%SMART%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%TC_WAITLIST%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%ML_50%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%ML_35%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%ML_70%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%MP_50%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%MP_35%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%35_EN%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%50_EN%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%MP_70%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%BARRIDA%' THEN 'PUSH'
+      WHEN UPPER(PLACEMENT) LIKE '%XSELL%' THEN 'BANNER XSELL'
+      WHEN UPPER(PLACEMENT) LIKE '%MAXWELL%' THEN 'MAXWELL'
+      WHEN UPPER(PLACEMENT) LIKE '%HUB_LOYALTY%' THEN 'HUB LOYALTY'
+      WHEN UPPER(PLACEMENT) LIKE '%WPP%' THEN 'WHATSAPP'
+      WHEN UPPER(PLACEMENT) LIKE '%WHATSAPP%' THEN 'WHATSAPP'
+      WHEN UPPER(PLACEMENT) LIKE '%CONGRAT%' THEN 'CONGRATS'
+      WHEN UPPER(PLACEMENT) LIKE '%SHEET%' THEN 'VIP+BOTTOM SHEET'
+      WHEN UPPER(PLACEMENT) LIKE '%CREDIT_NUMERIC%' THEN 'CREDIT SCORE'
+      WHEN UPPER(PLACEMENT) LIKE '%CREDIT_SCORING%' THEN 'CREDIT SCORE'
+      WHEN UPPER(PLACEMENT) LIKE '%ONE PAGE%' THEN 'ONE PAGE'
+      WHEN UPPER(PLACEMENT) LIKE '%MINICARD%' OR UPPER(PLACEMENT) LIKE '%BANNER_DASHBOARD%' OR UPPER(PLACEMENT) LIKE '%HOME_ANITTA%' THEN 'MINICARD+DASH'
+      WHEN UPPER(PLACEMENT) LIKE '%ONBOARDING%' THEN 'ONBOARDING MP'
+      WHEN UPPER(PLACEMENT) LIKE '%CHO%' THEN 'CHECKOUT'
+      WHEN UPPER(PLACEMENT) LIKE '%NBT%' THEN 'NBT'
+      WHEN UPPER(PLACEMENT) LIKE '%QA%' THEN 'QA'
+      WHEN UPPER(PLACEMENT) LIKE '%WEB%' THEN 'WEB'
+      WHEN UPPER(PLACEMENT) LIKE '%MODAL%' THEN 'MODAL'
+      WHEN UPPER(PLACEMENT) LIKE '%CARDS_LISTING%' THEN 'MINICARD+DASH'
+      WHEN UPPER(PLACEMENT) = 'EA' THEN 'EA'
+      WHEN PLACEMENT IS NULL THEN 'NULO'
+      ELSE 'OUTROS'
+    END AS FLAG_TIPO
+  FROM `meli-bi-data.SBOX_CREDITSTC.0_AUT_TBL_CONGRATS_ADQ_MLB_TOTAL`
+  WHERE DT_CONGRATS >= '2026-01-01'
+),
+
+-- PUSH/EMAIL/WHATSAPP/MODAL nunca cai em PRODUTOS por padrao -- vira AUTOMATIZADA (mesma regra
+-- de grid_share_conversao_canal_query.sql)
+congrats_raw AS (
+  SELECT
+    * EXCEPT (FLAG_TIPO_CANAL_RAW0),
+    CASE
+      WHEN FLAG_TIPO_CANAL_RAW0 = 'PRODUTOS' AND FLAG_TIPO IN ('PUSH', 'EMAIL', 'WHATSAPP', 'MODAL')
+        THEN 'AUTOMATIZADA'
+      ELSE FLAG_TIPO_CANAL_RAW0
+    END AS FLAG_TIPO_CANAL_RAW
+  FROM congrats_raw0
+),
+
+proposta_aceita AS (
+  SELECT
+    A.CCARD_PROP_ID,
+    SAFE_CAST(A.CUS_CUST_ID AS INT64) AS cus_cust_id,
+    CAST(A.CCARD_PROP_CREATION_DT AS DATE) AS dt_encendido,
+    CAST(A.CCARD_PROP_UPDATE_DT AS DATE) AS dt_aceite,
+    FORMAT_DATE('%Y%m', CAST(A.CCARD_PROP_CREATION_DT AS DATE)) AS anomes_encendido,
+    DATE_DIFF(CAST(A.CCARD_PROP_UPDATE_DT AS DATE), CAST(A.CCARD_PROP_CREATION_DT AS DATE), DAY) AS dias_conv,
+    CASE WHEN A.CCARD_GLOBAL_LIMIT_AMT_LC <= 100 OR A.CCARD_PRODUCT_ID = 5
+         THEN 'MICRO' ELSE 'FULL' END AS FLAG_TC
+  FROM `meli-bi-data.WHOWNER.BT_CCARD_PROPOSAL` A
+  WHERE A.sit_site_id = 'MLB'
+    AND A.CCARD_PROP_STATUS = 'accepted'
+    AND CAST(A.CCARD_PROP_CREATION_DT AS DATE) >= '2026-01-01'
+),
+
+proposta_com_ea AS (
+  SELECT
+    p.*,
+    ea.cus_cust_id IS NOT NULL AS flag_ea,
+    ea.bu_ea
+  FROM proposta_aceita p
+  LEFT JOIN congrats_ea ea
+    ON ea.cus_cust_id = p.cus_cust_id
+   AND ea.mes_aceite = DATE_TRUNC(p.dt_aceite, MONTH)
+),
+
+-- junta com a classificação por placement (dia exato) só pra quem NÃO é EA / pra pegar FLAG_TIPO
+proposta_canal AS (
+  SELECT DISTINCT
+    p.CCARD_PROP_ID,
+    p.anomes_encendido,
+    LEAST(p.dias_conv, 120) AS dias_conv_capped,
+    p.flag_ea,
+    p.FLAG_TC,
+    COALESCE(CASE WHEN p.flag_ea THEN p.bu_ea END, c.BU_NORM) AS BU_NORM,
+    CASE WHEN p.flag_ea THEN 'EA' ELSE c.FLAG_TIPO_CANAL_RAW END AS FLAG_TIPO_CANAL,
+    c.FLAG_TIPO
+  FROM proposta_com_ea p
+  LEFT JOIN congrats_raw c
+    ON c.cus_cust_id = p.cus_cust_id
+   AND c.dt_congrats = p.dt_aceite
+  WHERE p.flag_ea OR c.cus_cust_id IS NOT NULL
+)
+
+-- saida conjunta: FLAG_TIPO_CANAL e FLAG_TIPO juntos por linha (nao mais UNION ALL separado),
+-- pra permitir filtrar o FLAG_TIPO/placement por canal tambem (validacao cruzada)
+SELECT
+  anomes_encendido,
+  BU_NORM,
+  FLAG_TC,
+  FLAG_TIPO_CANAL,
+  CASE WHEN flag_ea THEN 'EA' ELSE COALESCE(FLAG_TIPO, 'OUTROS') END AS FLAG_TIPO,
+  dias_conv_capped,
+  COUNT(DISTINCT CCARD_PROP_ID) AS qtd
+FROM proposta_canal
+WHERE FLAG_TIPO_CANAL IS NOT NULL
+GROUP BY 1, 2, 3, 4, 5, 6
+ORDER BY 1, 2, 3, 4, 5, 6
