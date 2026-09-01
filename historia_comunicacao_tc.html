@@ -104,6 +104,10 @@
   .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .status-badge.done { background: #e2f6ec; color: #00723a; }
   .status-badge.wip { background: #fff4cf; color: #9a6b00; }
+  .plano-note { font-size: 14px; color: #666; font-style: italic; margin: -4px 0 8px 0; }
+  .plano-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px 0; }
+  .plano-link { background: #eef8ff; color: #009ee3; padding: 4px 14px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; }
+  .plano-link:hover { background: #d9f0fc; }
 
   .bf-wrap { display: flex; flex-direction: column; }
   .bf-row { display: flex; align-items: center; width: 100%; }
@@ -237,8 +241,19 @@ const I18N = {
         { title: 'Inclusão de novos touchpoints como alavanca de conversão (e-mail, D4) -- jul/26', status: 'done',
           alert: 'Implementado, mas ainda sem resultado visível na conversão -- depende da correção da campanha D1 (ajuste de query + configuração da journey SWITCH), que segue em andamento.' },
         { title: 'Ajuste das campanhas para entrada diária de usuários na jornada -- ago/26', status: 'done' },
-        { title: 'Ativação do POM como canal complementar de conversão -- aquisição: set/26, engajamento: ago/26', status: 'wip' }
-      ]
+        { title: 'Ativação do POM como canal complementar de conversão -- aquisição: set/26, engajamento: ago/26', status: 'wip',
+          note: 'Pra engajados, já estamos online no TikTok:',
+          links: [
+            'https://v-ttam.tiktok.com/s/ZSVp8j7Qx/',
+            'https://v-ttam.tiktok.com/s/ZSVp8ddAC/',
+            'https://v-ttam.tiktok.com/s/ZSVp8Pw85/',
+            'https://v-ttam.tiktok.com/s/ZSVp8f8dn/',
+            'https://v-ttam.tiktok.com/s/ZSVp8h6eP/',
+            'https://v-ttam.tiktok.com/s/ZSVp8U66b/',
+            'https://v-ttam.tiktok.com/s/ZSVp8ysY4/'
+          ] }
+      ],
+      videoLabel: 'Vídeo'
     },
     chart: {
       d1Full: 'D1 Full -- % enviado (ML)', d1Micro: 'D1 Micro -- % enviado (ML)',
@@ -313,8 +328,19 @@ const I18N = {
         { title: 'Inclusión de nuevos touchpoints como palanca de conversión (email, D4) -- jul/26', status: 'done',
           alert: 'Implementado, pero todavía sin resultado visible en conversión -- depende de la corrección de la campaña D1 (ajuste de query + configuración de la journey SWITCH), que sigue en curso.' },
         { title: 'Ajuste de las campañas para entrada diaria de usuarios en la jornada -- ago/26', status: 'done' },
-        { title: 'Activación del POM como canal complementario de conversión -- adquisición: set/26, engagement: ago/26', status: 'wip' }
-      ]
+        { title: 'Activación del POM como canal complementario de conversión -- adquisición: set/26, engagement: ago/26', status: 'wip',
+          note: 'Para engagement, ya estamos online en TikTok:',
+          links: [
+            'https://v-ttam.tiktok.com/s/ZSVp8j7Qx/',
+            'https://v-ttam.tiktok.com/s/ZSVp8ddAC/',
+            'https://v-ttam.tiktok.com/s/ZSVp8Pw85/',
+            'https://v-ttam.tiktok.com/s/ZSVp8f8dn/',
+            'https://v-ttam.tiktok.com/s/ZSVp8h6eP/',
+            'https://v-ttam.tiktok.com/s/ZSVp8U66b/',
+            'https://v-ttam.tiktok.com/s/ZSVp8ysY4/'
+          ] }
+      ],
+      videoLabel: 'Video'
     },
     chart: {
       d1Full: 'D1 Full -- % enviado (ML)', d1Micro: 'D1 Micro -- % enviado (ML)',
@@ -395,11 +421,18 @@ const avgRangeLinePlugin = {
       ctx.lineTo(x2, y);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle = r.color;
       ctx.font = "700 13px 'Segoe UI', sans-serif";
       ctx.textAlign = 'center';
-      ctx.textBaseline = r.labelAbove ? 'bottom' : 'top';
-      ctx.fillText(r.label, (x1 + x2) / 2, r.labelAbove ? y - 6 : y + 6);
+      ctx.textBaseline = 'middle';
+      const labelX = (x1 + x2) / 2;
+      const labelY = r.labelAbove ? y - 14 : y + 14;
+      const metrics = ctx.measureText(r.label);
+      const boxW = metrics.width + 12;
+      const boxH = 20;
+      ctx.fillStyle = 'rgba(255,255,255,.92)';
+      ctx.fillRect(labelX - boxW / 2, labelY - boxH / 2, boxW, boxH);
+      ctx.fillStyle = r.color;
+      ctx.fillText(r.label, labelX, labelY);
       ctx.restore();
     });
   }
@@ -496,11 +529,15 @@ function slide6() {
         ${item.subitems.map(s => `<div class="plano-sub"><span>${s}</span>${statusBadge('wip')}</div>`).join('')}
       </div>` : '';
     const alert = item.alert ? `<div class="note-box" style="margin-bottom:18px;">${item.alert}</div>` : '';
+    const note = item.note ? `<div class="plano-note">${item.note}</div>` : '';
+    const links = item.links ? `<div class="plano-links">${item.links.map((url, i) => `<a class="plano-link" href="${url}" target="_blank" rel="noopener">${t.videoLabel} ${i + 1}</a>`).join('')}</div>` : '';
     return `
       <div class="plano-item">
         <div>${item.title}</div>
         ${statusBadge(item.status)}
       </div>
+      ${note}
+      ${links}
       ${sub}
       ${alert}`;
   }).join('');
