@@ -97,6 +97,14 @@
   .badge.full { background: #009ee3; }
   .badge.micro { background: #ff7733; }
 
+  .plano-banner { background: #ffe600; color: #17384d; font-weight: 800; font-size: 21px; text-align: center; padding: 14px; border-radius: 10px; margin-bottom: 18px; }
+  .plano-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: white; border-radius: 10px; padding: 16px 22px; box-shadow: 0 2px 8px rgba(0,0,0,.06); margin-bottom: 10px; font-size: 18px; color: #222; font-weight: 600; }
+  .plano-subitems { margin: 0 0 16px 40px; padding-left: 18px; border-left: 3px dashed #d5dde3; }
+  .plano-sub { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fafbfc; border: 1px solid #e5e8eb; border-radius: 8px; padding: 10px 18px; margin-bottom: 8px; font-size: 15px; color: #444; }
+  .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .status-badge.done { background: #e2f6ec; color: #00723a; }
+  .status-badge.wip { background: #fff4cf; color: #9a6b00; }
+
   .bf-wrap { display: flex; flex-direction: column; }
   .bf-row { display: flex; align-items: center; width: 100%; }
   .bf-label { width: 260px; flex: 0 0 260px; text-align: right; padding-right: 12px; font-size: 19px; color: #666; line-height: 1.2; }
@@ -213,16 +221,24 @@ const I18N = {
       perdaLabel: 'Perda estimada vs meta fev-abr ({PCT}%)'
     },
     s6: {
-      kicker: 'Um Achado Paralelo',
-      h1: 'No mesmo período, o mix de usuários também mudou',
-      lead: 'Conversão por BU: Mercado Pago vs Mercado Livre (Sem EA, só canais Automatizada + MKT).',
-      moveUpMarket: 'Trazer menos usuários via ML vai contra a estratégia de <b>move up market</b> -- sabemos historicamente que usuários ML são melhores que usuários MP.'
-    },
-    s7: {
       kicker: 'Pra Fechar',
-      h1: 'O impacto real provavelmente é do mesmo tamanho nos dois -- só que em Full ele fica escondido',
-      lead: 'Distribuição de comunicações por proposta (buckets de toques), Full e Micro sempre lado a lado nesse slide -- é o contraste entre os dois que é o ponto.',
-      highlight: '{MICRO} não teve mudança de política de risco no período -- é a comparação mais limpa que temos entre safras, e mostra a erosão do grupo de alta frequência (10+ toques) de forma muito clara. <b>Full TC provavelmente sofreu um impacto do mesmo tamanho</b> -- só que fica disfarçado, porque mudanças de risco/elegibilidade no Full aconteceram no mesmo período e misturam o sinal.'
+      h1: 'O que estamos fazendo pra reverter isso',
+      lead: 'Plano de ação em andamento -- revisão de configuração das campanhas, novos touchpoints e canais complementares.',
+      planoTitle: 'Plano de Ação',
+      doneLabel: 'Feito',
+      wipLabel: 'Em andamento',
+      items: [
+        { title: 'Revisão da configuração das campanhas', status: 'wip', subitems: [
+          'Correção da campanha D7 para D10: ajuste na query',
+          'Correção da campanha D1: ajuste na query e revisão de configuração da journey (SWITCH)',
+          'Ajuste na reentrada de usuários no fluxo de 30D para 25D',
+          'Revisão IE Eldorado: 7 dias de uso do cupom após emissão de TC'
+        ]},
+        { title: 'Inclusão de novos touchpoints como alavanca de conversão (e-mail, D4) -- jul/26', status: 'done',
+          alert: 'Implementado, mas ainda sem resultado visível na conversão -- depende da correção da campanha D1 (ajuste de query + configuração da journey SWITCH), que segue em andamento.' },
+        { title: 'Ajuste das campanhas para entrada diária de usuários na jornada -- ago/26', status: 'done' },
+        { title: 'Ativação do POM como canal complementar de conversão -- aquisição: set/26, engajamento: ago/26', status: 'wip' }
+      ]
     },
     chart: {
       d1Full: 'D1 Full -- % enviado (ML)', d1Micro: 'D1 Micro -- % enviado (ML)',
@@ -281,16 +297,24 @@ const I18N = {
       perdaLabel: 'Pérdida estimada vs meta feb-abr ({PCT}%)'
     },
     s6: {
-      kicker: 'Un Hallazgo Paralelo',
-      h1: 'En el mismo período, el mix de usuarios también cambió',
-      lead: 'Conversión por BU: Mercado Pago vs Mercado Libre (Sin EA, solo canales Automatizada + MKT).',
-      moveUpMarket: 'Traer menos usuarios vía ML va en contra de la estrategia de <b>move up market</b> -- sabemos históricamente que los usuarios ML son mejores que los usuarios MP.'
-    },
-    s7: {
       kicker: 'Para Cerrar',
-      h1: 'El impacto real probablemente es del mismo tamaño en los dos -- solo que en Full queda escondido',
-      lead: 'Distribución de comunicaciones por propuesta (buckets de contactos), Full y Micro siempre lado a lado en esta diapositiva -- el contraste entre los dos es el punto.',
-      highlight: '{MICRO} no tuvo cambios de política de riesgo en el período -- es la comparación más limpia que tenemos entre cohortes, y muestra la erosión del grupo de alta frecuencia (10+ contactos) de forma muy clara. <b>Full TC probablemente sufrió un impacto del mismo tamaño</b> -- solo que queda disfrazado, porque cambios de riesgo/elegibilidad en Full ocurrieron en el mismo período y mezclan la señal.'
+      h1: 'Qué estamos haciendo para revertir esto',
+      lead: 'Plan de acción en curso -- revisión de configuración de las campañas, nuevos touchpoints y canales complementarios.',
+      planoTitle: 'Plan de Acción',
+      doneLabel: 'Hecho',
+      wipLabel: 'En curso',
+      items: [
+        { title: 'Revisión de la configuración de las campañas', status: 'wip', subitems: [
+          'Corrección de la campaña D7 a D10: ajuste en la query',
+          'Corrección de la campaña D1: ajuste en la query y revisión de configuración de la journey (SWITCH)',
+          'Ajuste en la reentrada de usuarios en el flujo de 30D a 25D',
+          'Revisión IE Eldorado: 7 días de uso del cupón después de la emisión de TC'
+        ]},
+        { title: 'Inclusión de nuevos touchpoints como palanca de conversión (email, D4) -- jul/26', status: 'done',
+          alert: 'Implementado, pero todavía sin resultado visible en conversión -- depende de la corrección de la campaña D1 (ajuste de query + configuración de la journey SWITCH), que sigue en curso.' },
+        { title: 'Ajuste de las campañas para entrada diaria de usuarios en la jornada -- ago/26', status: 'done' },
+        { title: 'Activación del POM como canal complementario de conversión -- adquisición: set/26, engagement: ago/26', status: 'wip' }
+      ]
     },
     chart: {
       d1Full: 'D1 Full -- % enviado (ML)', d1Micro: 'D1 Micro -- % enviado (ML)',
@@ -465,33 +489,32 @@ function slide5() {
 
 function slide6() {
   const t = L().s6;
+  const statusBadge = status => `<span class="status-badge ${status}">${status === 'done' ? '✅ ' + t.doneLabel : '🚧 ' + t.wipLabel}</span>`;
+  const itemsHtml = t.items.map(item => {
+    const sub = item.subitems ? `
+      <div class="plano-subitems">
+        ${item.subitems.map(s => `<div class="plano-sub"><span>${s}</span>${statusBadge('wip')}</div>`).join('')}
+      </div>` : '';
+    const alert = item.alert ? `<div class="note-box" style="margin-bottom:18px;">${item.alert}</div>` : '';
+    return `
+      <div class="plano-item">
+        <div>${item.title}</div>
+        ${statusBadge(item.status)}
+      </div>
+      ${sub}
+      ${alert}`;
+  }).join('');
   return `
   <div class="slide" id="slide-6">
     <div class="kicker">${t.kicker}</div>
     <h1>${t.h1}</h1>
     <div class="lead">${t.lead}</div>
-    <div class="chart-wrap"><canvas id="chartBU"></canvas></div>
-    <div class="highlight-box">${t.moveUpMarket}</div>
+    <div class="plano-banner">${t.planoTitle}</div>
+    ${itemsHtml}
   </div>`;
 }
 
-function slide7() {
-  const t = L().s7;
-  const highlight = t.highlight.replace('{MICRO}', '<span class="badge micro">Micro TC</span>');
-  return `
-  <div class="slide" id="slide-7">
-    <div class="kicker">${t.kicker}</div>
-    <h1>${t.h1}</h1>
-    <div class="lead" style="font-size:16px;">${t.lead}</div>
-    <div class="two-col">
-      <div><canvas id="chartDistFinalFull"></canvas></div>
-      <div><canvas id="chartDistFinalMicro"></canvas></div>
-    </div>
-    <div class="highlight-box">${highlight}</div>
-  </div>`;
-}
-
-const SLIDES = [slide0, slide1, slide2, slide3, slide4, slide5, slide6, slide7];
+const SLIDES = [slide0, slide1, slide2, slide3, slide4, slide5, slide6];
 let currentSlide = 0;
 
 function renderSlides() {
@@ -555,8 +578,6 @@ function renderChartsForSlide(i) {
   if (i === 3) { renderRecebimento(); renderVelDelta(); }
   if (i === 4) renderComunic();
   if (i === 5) { renderLossTable(); renderIncTotal(); renderIncPct(); }
-  if (i === 6) renderBU();
-  if (i === 7) renderDistFinal();
 }
 
 // ---- Slide 2: funil comparativo da Bruna (Mercurio 04/26 x flows julho/2026) --
@@ -871,71 +892,6 @@ function renderLossTable() {
   html += `<td class="total-col ${somaPerda>0?'neg':'pos'}">${somaPerda>0?'-':'+'}${fmtInt(Math.abs(somaPerda))}</td>`;
   html += '</tr></tbody></table></div>';
   document.getElementById('lossTableWrap').innerHTML = html;
-}
-
-function renderBU() {
-  const d = D.BU_DATA[tcFilter];
-  const mp = MESES.map(m => d[m].MP);
-  const ml = MESES.map(m => d[m].ML);
-  const pctMl = MESES.map((m,i) => { const t = mp[i]+ml[i]; return t ? +(100*ml[i]/t).toFixed(1) : null; });
-  const pctMp = pctMl.map(v => v!=null ? +(100-v).toFixed(1) : null);
-  upsertChart('chartBU', {
-    type: 'bar',
-    data: {
-      labels: MESES.map(mesLabel),
-      datasets: [
-        { label: L().chart.mercadoPago, data: pctMp, backgroundColor: '#009ee3', stack: 's' },
-        { label: L().chart.mercadoLivre, data: pctMl, backgroundColor: '#ffe600', stack: 's' }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { font: { size: 16 } } }, datalabels: { color: c => c.dataset.label === L().chart.mercadoLivre ? '#333' : '#fff', font: { weight: 700, size: 15 }, formatter: v => v!=null? v.toFixed(0)+'%':'' }, modelChangeLine: modelChangeOpts() },
-      scales: { x: { stacked: true, ticks: { font: { size: 15 } } }, y: { stacked: true, max: 100, ticks: { font: { size: 13 }, callback: v=>v+'%' } } }
-    },
-    plugins: [ChartDataLabels, modelChangeLinePlugin]
-  });
-}
-
-const BUCKET_ORDER = ['0','1','2','3','4','5','6','7','8','9','10+'];
-const BUCKET_COLORS = ['#e8f6fd','#c9ecfa','#a3dff5','#7ad0ef','#4fc0e8','#009ee3','#0084bd','#006a97','#005071','#00374d','#001c28'];
-
-function distDatasetsFor(tc) {
-  const rows = D.DIST_DATA.filter(r => r.flag_tc === tc);
-  const porMesBucket = {};
-  MESES.forEach(m => { porMesBucket[m] = {}; BUCKET_ORDER.forEach(b => porMesBucket[m][b] = 0); });
-  rows.forEach(r => { porMesBucket[r.mes][r.bucket] = (porMesBucket[r.mes][r.bucket]||0) + r.qtd_propostas; });
-  return BUCKET_ORDER.map((b,i) => ({
-    label: b,
-    data: MESES.map(m => { const tot = BUCKET_ORDER.reduce((s,bb)=>s+porMesBucket[m][bb],0); return tot ? +(100*porMesBucket[m][b]/tot).toFixed(1) : 0; }),
-    backgroundColor: BUCKET_COLORS[i], stack: 's'
-  }));
-}
-
-function distChartOptions(titulo) {
-  return {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, title: { display: true, text: titulo, font: { size: 16 } },
-      datalabels: { display: c => c.dataset.data[c.dataIndex] >= 10, color: c => (BUCKET_ORDER.indexOf(c.dataset.label)>=6?'#fff':'#333'), font: { size: 10, weight: 700 }, formatter: v => v.toFixed(0)+'%' },
-      modelChangeLine: modelChangeOpts() },
-    scales: { x: { stacked: true, ticks: { font: { size: 12 } } }, y: { stacked: true, max: 100, ticks: { callback: v=>v+'%' } } }
-  };
-}
-
-function renderDistFinal() {
-  // Slide de fechamento SEMPRE mostra Full e Micro lado a lado (ignora o toggle de TC -- o contraste é o ponto)
-  upsertChart('chartDistFinalFull', {
-    type: 'bar',
-    data: { labels: MESES.map(mesLabel), datasets: distDatasetsFor('1. TC Full') },
-    options: distChartOptions('TC FULL'),
-    plugins: [ChartDataLabels, modelChangeLinePlugin]
-  });
-  upsertChart('chartDistFinalMicro', {
-    type: 'bar',
-    data: { labels: MESES.map(mesLabel), datasets: distDatasetsFor('2. Micro TC') },
-    options: distChartOptions('MICRO TC'),
-    plugins: [ChartDataLabels, modelChangeLinePlugin]
-  });
 }
 
 applyStaticText();
