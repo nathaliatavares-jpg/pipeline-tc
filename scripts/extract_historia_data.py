@@ -31,7 +31,7 @@ for (mes, campaign, segmento), (tot, sent) in seg_agg.items():
     d1_agg[(mes, campaign)][0] += tot
     d1_agg[(mes, campaign)][1] += sent
 
-MESES = ['202601', '202602', '202603', '202604', '202605', '202606', '202607', '202608']
+MESES = ['202601', '202602', '202603', '202604', '202605', '202606', '202607', '202608', '202609']
 D1_DATA = {'FULL': {}, 'MICRO': {}}
 for mes in MESES:
     tot, sent = d1_agg[(mes, 'D1 FULL')]

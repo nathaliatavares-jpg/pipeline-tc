@@ -170,7 +170,7 @@ window.addEventListener('error', e => {
   document.body.appendChild(box);
 });
 const D = __DATA_JS__;
-const MESES = ['202601','202602','202603','202604','202605','202606','202607','202608'];
+const MESES = ['202601','202602','202603','202604','202605','202606','202607','202608','202609'];
 
 // ================= I18N =================
 
@@ -184,6 +184,7 @@ const I18N = {
     topbarTitle: 'A História da Queda de Comunicação em TC',
     navPrev: 'Anterior', navNext: 'Próxima',
     modelChangeLabel: 'mudança de modelo (mai/26)',
+    setParcialNote: ' Set/26 é parcial (dados até 13/09) -- ainda mais imaturo que ago/26, não comparar diretamente com meses fechados.',
     antesLabel: v => `Antes (sem Fev): ${v}`,
     antesLabelPct: v => `Antes (Fev-Abr): ${v}%`,
     depoisLabel: (v, d) => `Depois: ${v} (${d >= 0 ? '+' : ''}${d}%)`,
@@ -197,7 +198,7 @@ const I18N = {
       kicker: 'O Início',
       h1: 'Tudo começou quando percebemos que caiu o envio da nossa D1',
       lead: '% de encendidos (App Ativo = ML) que receberam a comunicação D1 -- primeira comunicação depois do encendido.',
-      note: 'O padrão se repete em {FULL} e {MICRO}: estável em torno de 60-70% até junho/julho, e uma queda abrupta em ago/26 -- o primeiro sinal de que algo mudou na comunicação.'
+      note: 'O padrão se repete em {FULL} e {MICRO}: estável em torno de 60-70% até junho/julho, e uma queda abrupta em ago/26 -- o primeiro sinal de que algo mudou na comunicação. Set/26 é parcial (dados até 13/09) -- o valor ainda mais baixo reflete em parte a imaturidade do mês, não é diretamente comparável aos meses fechados.'
     },
     s2: {
       kicker: 'A Investigação',
@@ -271,6 +272,7 @@ const I18N = {
     topbarTitle: 'La Historia de la Caída de Comunicación en TC',
     navPrev: 'Anterior', navNext: 'Siguiente',
     modelChangeLabel: 'cambio de modelo (may/26)',
+    setParcialNote: ' Sep/26 es parcial (datos hasta el 13/09) -- aún más inmaduro que ago/26, no comparar directamente con meses cerrados.',
     antesLabel: v => `Antes (sin Feb): ${v}`,
     antesLabelPct: v => `Antes (Feb-Abr): ${v}%`,
     depoisLabel: (v, d) => `Después: ${v} (${d >= 0 ? '+' : ''}${d}%)`,
@@ -284,7 +286,7 @@ const I18N = {
       kicker: 'El Comienzo',
       h1: 'Todo empezó cuando notamos que cayó el envío de nuestra D1',
       lead: '% de encendidos (App Activa = ML) que recibieron la comunicación D1 -- primera comunicación después del encendido.',
-      note: 'El patrón se repite en {FULL} y {MICRO}: estable alrededor de 60-70% hasta junio/julio, y una caída abrupta en ago/26 -- la primera señal de que algo cambió en la comunicación.'
+      note: 'El patrón se repite en {FULL} y {MICRO}: estable alrededor de 60-70% hasta junio/julio, y una caída abrupta en ago/26 -- la primera señal de que algo cambió en la comunicación. Sep/26 es parcial (datos hasta el 13/09) -- el valor aún más bajo refleja en parte la inmadurez del mes, no es directamente comparable a los meses cerrados.'
     },
     s2: {
       kicker: 'La Investigación',
@@ -765,7 +767,7 @@ function renderRecebimento() {
   });
 
   const t = L().s3;
-  document.getElementById('mecanismoText').innerHTML = tcFilter === 'FULL' ? t.mecFull : t.mecMicro;
+  document.getElementById('mecanismoText').innerHTML = (tcFilter === 'FULL' ? t.mecFull : t.mecMicro) + L().setParcialNote;
 }
 
 function renderVelDelta() {
@@ -882,7 +884,7 @@ function renderIncPct() {
   // Depois = Mai-Ago, mesmos 4 meses que a tabela de perda ja usa (Ago incluido de proposito
   // aqui, diferente do grafico de comunicacoes -- essa metrica nao depende da janela D0..D30).
   const antesAvg = weightedAvgGeneric(porMes, ['202602','202603','202604'], 'inc', 'conv');
-  const depoisAvg = weightedAvgGeneric(porMes, ['202605','202606','202607','202608'], 'inc', 'conv');
+  const depoisAvg = weightedAvgGeneric(porMes, ['202605','202606','202607','202608','202609'], 'inc', 'conv');
   const delta = (antesAvg && depoisAvg) ? ((depoisAvg / antesAvg - 1) * 100) : null;
 
   upsertChart('chartIncPct', {
@@ -919,7 +921,7 @@ function renderLossTable() {
   const meta = convBase ? incBase/convBase : 0;
 
   const t = L().s5;
-  const mesesAlvo = ['202605','202606','202607','202608'];
+  const mesesAlvo = ['202605','202606','202607','202608','202609'];
   let somaPerda = 0;
   let html = '<div class="story-tbl-wrap"><table class="story-tbl"><thead><tr><th>' + t.mesHeader + '</th>' + mesesAlvo.map(m=>`<th>${mesLabel(m)}</th>`).join('') + `<th class="total-col">${t.totalHeader}</th>` + '</tr></thead><tbody>';
   html += '<tr><td>' + t.perdaLabel.replace('{PCT}', (meta*100).toFixed(1)) + '</td>';
