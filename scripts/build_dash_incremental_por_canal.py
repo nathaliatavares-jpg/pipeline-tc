@@ -116,7 +116,8 @@ html = r"""<!DOCTYPE html>
   </div>
   <div class="meta">
     Metodologia: janela D0..D0+3 por cohort de envio<br>
-    Escopo: campanhas TC/CCARD com grupo controle (2026)
+    Escopo: campanhas TC/CCARD com grupo controle (2026)<br>
+    Set/26 parcial (dados ate 13/09)
   </div>
 </div>
 
@@ -310,7 +311,7 @@ function buildKpis() {
   const incAuto = DATA.filter(r => r.canal === 'AUTOMATIZADA').reduce((s,r) => s + incVal(r), 0);
 
   const cards = [
-    { label: 'Incremental total (Jan-Ago)', value: fmtInt(totalInc), sub: new Set(DATA.map(r => r.campanha)).size + ' campanhas com grupo controle', cls: '' },
+    { label: 'Incremental total (Jan-Set, parcial)', value: fmtInt(totalInc), sub: new Set(DATA.map(r => r.campanha)).size + ' campanhas com grupo controle', cls: '' },
     { label: 'Incremental via Automatizada', value: fmtInt(incAuto), sub: (100*incAuto/totalInc).toFixed(1) + '% do total', cls: '' },
     { label: 'Incremental via MKT', value: fmtInt(incMkt), sub: (100*incMkt/totalInc).toFixed(1) + '% do total', cls: 'purple' },
     { label: 'Total exposto (shown, acao)', value: fmtInt(totalShown), sub: 'base de usuarios que viram alguma comunicacao', cls: '' },

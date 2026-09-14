@@ -82,7 +82,7 @@ for tc in ['FULL', 'MICRO']:
         for tipo, arr in node_ml.items():
             for i in range(8):
                 ml_total[i] += arr[i]
-    for i, mes in enumerate(MESES):
+    for i, mes in enumerate(MESES[:8]):
         BU_DATA[tc][mes] = {'MP': mp_total[i], 'ML': ml_total[i]}
 
 # ---- Slide 4 (extra): Total -- Antes (Jan,Mar-Mai sem Fev) vs Agora (Jun+), Sem EA-MP ----
